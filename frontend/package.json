@@ -6,9 +6,12 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.10.2",
+    "@prisma/client": "^6.2.1",
     "@radix-ui/react-menubar": "^1.1.5",
     "@radix-ui/react-slot": "^1.1.1",
     "class-variance-authority": "^0.7.1",
@@ -29,6 +32,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.1.6",
     "postcss": "^8",
+    "prisma": "^6.2.1",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }
