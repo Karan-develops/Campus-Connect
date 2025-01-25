@@ -1,11 +1,17 @@
-import React from 'react'
+import { Metadata } from "next";
+import PlacementsContent from "./placements-content";
 
-const PlacementsPage = () => {
+export const metadata: Metadata = {
+  title: "Placements | Campus Dairy",
+  description:
+    "Explore our outstanding placement records and student success stories.",
+};
+
+export default function PlacementsPage() {
   return (
-    <div>
-      
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-8 text-center">Placements</h1>
+      <PlacementsContent />
     </div>
-  )
+  );
 }
-
-export default PlacementsPage
