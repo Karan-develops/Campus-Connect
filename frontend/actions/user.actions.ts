@@ -33,3 +33,11 @@ export async function syncUser() {
     console.log("Error syncing user", error);
   }
 }
+
+export async function getUserByClerkId(clerkId:string){
+  return prisma.user.findFirst({
+    where:{
+      clerkId
+    }
+  })
+}
