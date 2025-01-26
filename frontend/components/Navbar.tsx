@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, BellIcon, UserIcon } from "lucide-react";
 import {
   Menubar,
   MenubarContent,
@@ -10,6 +10,9 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "@/components/ui/menubar";
+import { SignInButton, UserButton } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
+import { Button } from "./ui/button";
 
 const navItems = [
   { name: "Home", href: "/" },
@@ -29,8 +32,10 @@ const navItems = [
 ];
 
 const Navbar = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  const user = currentUser();
+
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
   return (
@@ -80,6 +85,32 @@ const Navbar = () => {
                   )}
                 </div>
               ))}
+              {user ? (
+        <>
+          <Button variant="ghost" className="flex items-center gap-2" asChild>
+            <Link href="/notifications">
+              <BellIcon className="w-4 h-4" />
+              <span className="hidden lg:inline">Notifications</span>
+            </Link>
+          </Button>
+          <Button variant="ghost" className="flex items-center gap-2" asChild>
+            <Link
+              href={`/profile/${
+                user.username ??
+                user.emailAddresses[0].emailAddress.split("@")[0]
+              }`}
+            >
+              <UserIcon className="w-4 h-4" />
+              <span className="hidden lg:inline">Profile</span>
+            </Link>
+          </Button>
+          <UserButton />
+        </>
+      ) : (
+        <SignInButton mode="modal">
+          <Button variant="default">Sign In</Button>
+        </SignInButton>
+      )}
             </div>
           </div>
           <div className="md:hidden">

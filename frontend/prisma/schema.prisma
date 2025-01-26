@@ -18,6 +18,7 @@ model User {
   clerkId          String            @unique
   name             String
   email            String            @unique
+  username         String            @unique
   major            String?
   year             String?
   bio              String?
