@@ -26,6 +26,7 @@ const navItems = [
       { name: "Events", href: "/campus-life/events" },
     ],
   },
+  {name: "profile", href: "/profile"},
 ];
 
 const Navbar = () => {
