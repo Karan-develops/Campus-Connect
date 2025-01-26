@@ -13,16 +13,94 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  id   String @id @default(uuid())
-  email String @unique
-  username String
-  clerkId String @unique
-  name String?
-  bio String?
-  image String?
-  location String?
-  website String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model User {
+  id               String            @id @default(cuid())
+  clerkId          String            @unique
+  name             String
+  email            String            @unique
+  major            String?
+  year             String?
+  bio              String?
+  avatarUrl        String?
+  githubUrl        String?
+  linkedinUrl      String?
+  projects         Project[]
+  achievements     Achievement[]
+  extracurriculars Extracurricular[]
+  portfolioItems   PortfolioItem[]
+  privacySettings  PrivacySettings?
+  sentMessages     Message[]         @relation("SentMessages")
+  receivedMessages Message[]         @relation("ReceivedMessages")
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  skills      String[]
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Achievement {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  date        DateTime
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Extracurricular {
+  id          String    @id @default(cuid())
+  name        String
+  role        String
+  description String
+  startDate   DateTime
+  endDate     DateTime?
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model PortfolioItem {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  url         String
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PrivacySettings {
+  id                   String   @id @default(cuid())
+  userId               String   @unique
+  user                 User     @relation(fields: [userId], references: [id])
+  showEmail            Boolean  @default(true)
+  showProjects         Boolean  @default(true)
+  showAchievements     Boolean  @default(true)
+  showExtracurriculars Boolean  @default(true)
+  showPortfolio        Boolean  @default(true)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  content    String
+  senderId   String
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id])
+  receiverId String
+  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }

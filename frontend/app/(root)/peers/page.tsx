@@ -3,7 +3,7 @@ import PeersContent from './peers-content'
 
 export const metadata: Metadata = {
   title: 'Peers | Campus Diary',
-  description: 'Connect with your peers, find collaborators, and explore exciting projects at College Name.',
+  description: 'Connect with your peers, find collaborators, and explore exciting projects at Campus Diary.',
 }
 
 export default function PeersPage() {
