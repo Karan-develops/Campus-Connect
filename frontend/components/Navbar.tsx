@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, ChevronDown, BellIcon, UserIcon } from "lucide-react";
+import { Menu, X, ChevronDown, UserIcon } from "lucide-react";
 import {
   Menubar,
   MenubarContent,
@@ -11,8 +11,18 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import { SignInButton, UserButton } from "@clerk/nextjs";
-import { currentUser } from "@clerk/nextjs/server";
 import { Button } from "./ui/button";
+
+interface NavbarProps {
+  user: {
+    id: string
+    username: string | null
+    firstName: string | null
+    lastName: string | null
+    imageUrl: string
+    email: string
+  } | null
+}
 
 const navItems = [
   { name: "Home", href: "/" },
@@ -31,9 +41,10 @@ const navItems = [
   },
 ];
 
-const Navbar = async () => {
-  const user = await currentUser();
-
+const Navbar: React.FC<NavbarProps> = ({ user }) => {
+  console.log("**********************");
+  console.log("User in Navbar.tsx", user);
+  console.log("**********************");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
@@ -87,26 +98,10 @@ const Navbar = async () => {
               {user ? (
                 <>
                   <Button
-                    variant="ghost"
                     className="flex items-center gap-2"
                     asChild
                   >
-                    <Link href="/notifications">
-                      <BellIcon className="w-4 h-4" />
-                      <span className="hidden lg:inline">Notifications</span>
-                    </Link>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="flex items-center gap-2"
-                    asChild
-                  >
-                    <Link
-                      href={`/profile/${
-                        user.username ??
-                        user.emailAddresses[0].emailAddress.split("@")[0]
-                      }`}
-                    >
+                    <Link href={`/profile/${user.username}`}>
                       <UserIcon className="w-4 h-4" />
                       <span className="hidden lg:inline">Profile</span>
                     </Link>
@@ -175,6 +170,19 @@ const Navbar = async () => {
                 )}
               </div>
             ))}
+            {user && (
+              <Link
+                href={`/profile/${user.username}`}
+                className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-gray-700"
+              >
+                Profile
+              </Link>
+            )}
+          </div>
+          <div className="pt-4 pb-3 border-t border-gray-700">
+            <div className="flex items-center px-5">
+              <UserButton afterSignOutUrl="/" />
+            </div>
           </div>
         </div>
       )}

@@ -1,18 +1,20 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 
 export async function syncUser() {
   try {
-    const { userId } = await auth();
     const user = await currentUser();
-    if (!userId || !user) {
+    if (!user) {
       throw new Error("No user found");
     }
+    console.log("**********************");
+    console.log("User in syncUser", user);
+    console.log("**********************");
     const existingUser = await prisma.user.findUnique({
       where: {
-        clerkId: userId,
+        clerkId: user.id,
       },
     });
 
@@ -22,7 +24,7 @@ export async function syncUser() {
 
     const dbUser = await prisma.user.create({
       data: {
-        clerkId: userId,
+        clerkId: user.id,
         name: `${user.firstName || ""} ${user.lastName || ""}`.trim(),
         email: user.emailAddresses[0].emailAddress,
         username:
@@ -52,11 +54,11 @@ export async function syncUser() {
   }
 }
 
-export async function getUserByClerkId(clerkId: string) {
+export async function getProfileByUsername(username: string) {
   try {
-    const user = await prisma.user.findUnique({
+    const profile = await prisma.user.findUnique({
       where: {
-        clerkId,
+        username: username,
       },
       include: {
         projects: true,
@@ -67,13 +69,13 @@ export async function getUserByClerkId(clerkId: string) {
       },
     });
 
-    if (!user) {
+    if (!profile) {
       throw new Error("User not found");
     }
 
-    return user;
+    return profile;
   } catch (error) {
-    console.error("Error fetching user by Clerk ID", error);
+    console.error("Error fetching profile by username:", error);
     throw error;
   }
 }
@@ -92,7 +94,7 @@ export async function updateUserProfile(
 ) {
   try {
     const updatedUser = await prisma.user.update({
-      where: { id: userId },
+      where: { clerkId: userId },
       data,
     });
     return updatedUser;
@@ -113,8 +115,17 @@ export async function updatePrivacySettings(
   }
 ) {
   try {
+    const user = await prisma.user.findUnique({
+      where: { clerkId: userId },
+      select: { id: true },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
     const updatedSettings = await prisma.privacySettings.update({
-      where: { userId },
+      where: { userId: user.id },
       data: settings,
     });
     return updatedSettings;

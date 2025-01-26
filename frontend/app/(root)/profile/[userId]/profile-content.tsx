@@ -23,6 +23,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -33,7 +42,10 @@ import {
   Edit,
   Plus,
 } from "lucide-react";
-import { updateUserProfile, updatePrivacySettings } from "@/actions/user.actions";
+import {
+  updateUserProfile,
+  updatePrivacySettings,
+} from "@/actions/user.actions";
 
 type ProfileWithRelations = User & {
   projects: Project[];
@@ -63,7 +75,7 @@ export default function ProfileContent({
     try {
       await updateUserProfile(profile.id, {
         name: editedProfile.name,
-        username: editedProfile.username || undefined,
+        username: editedProfile.username,
         major: editedProfile.major || undefined,
         year: editedProfile.year || undefined,
         bio: editedProfile.bio || undefined,
