@@ -10,10 +10,11 @@ export const metadata: Metadata = {
 };
 
 export default async function ProfilePage({
-  params,
+  params: paramsPromise,
 }: {
-  params: { identifier: string };
+  params: Promise<{ identifier: string }>;
 }) {
+  const params = await paramsPromise;
   const user = await currentUser();
   if (!user) {
     return notFound();
@@ -22,7 +23,6 @@ export default async function ProfilePage({
   try {
     let profile;
     if (params.identifier.includes("@")) {
-      // If the identifier is an email
       profile = await prisma.user.findUnique({
         where: { email: params.identifier },
         include: {
@@ -34,7 +34,6 @@ export default async function ProfilePage({
         },
       });
     } else {
-      // Try to fetch by username first
       profile = await prisma.user.findUnique({
         where: { username: params.identifier },
         include: {
@@ -46,7 +45,6 @@ export default async function ProfilePage({
         },
       });
 
-      // If not found by username, try by Clerk ID
       if (!profile) {
         profile = await prisma.user.findUnique({
           where: { clerkId: params.identifier },
