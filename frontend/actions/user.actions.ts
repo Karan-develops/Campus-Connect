@@ -2,19 +2,23 @@
 
 import prisma from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
 
 export async function syncUser() {
   try {
     const user = await currentUser();
-    if (!user) {
-      throw new Error("No user found");
+    if (!user || !user.emailAddresses?.length) {
+      throw new Error("No valid user found");
     }
-    console.log("**********************");
-    console.log("User in syncUser", user);
-    console.log("**********************");
-    const existingUser = await prisma.user.findUnique({
+
+    const primaryEmail = user.emailAddresses[0].emailAddress;
+
+    const existingUser = await prisma.user.findFirst({
       where: {
         clerkId: user.id,
+      },
+      include: {
+        privacySettings: true,
       },
     });
 
@@ -22,14 +26,31 @@ export async function syncUser() {
       return existingUser;
     }
 
-    const dbUser = await prisma.user.create({
+    // Generate a unique username
+    const baseUsername = user.username || primaryEmail.split("@")[0];
+    let uniqueUsername = baseUsername;
+    let count = 1;
+
+    while (true) {
+      const usernameExists = await prisma.user.findUnique({
+        where: { username: uniqueUsername },
+      });
+
+      if (!usernameExists) break;
+
+      uniqueUsername = `${baseUsername}${count}`;
+      count++;
+    }
+
+    // Create new user with all required fields
+    const newUser = await prisma.user.create({
       data: {
         clerkId: user.id,
-        name: `${user.firstName || ""} ${user.lastName || ""}`.trim(),
-        email: user.emailAddresses[0].emailAddress,
-        username:
-          user.username || user.emailAddresses[0].emailAddress.split("@")[0],
-        avatarUrl: user.imageUrl,
+        name:
+          `${user.firstName || ""} ${user.lastName || ""}`.trim() || "New User",
+        email: primaryEmail,
+        username: uniqueUsername,
+        avatarUrl: user.imageUrl || "",
         major: "",
         year: "",
         bio: "",
@@ -45,12 +66,16 @@ export async function syncUser() {
           },
         },
       },
+      include: {
+        privacySettings: true,
+      },
     });
 
-    return dbUser;
+    revalidatePath("/");
+    return newUser;
   } catch (error) {
-    console.error("Error syncing user", error);
-    throw error;
+    console.error("Error in syncUser:", error);
+    throw new Error("Failed to sync user");
   }
 }
 
@@ -93,10 +118,31 @@ export async function updateUserProfile(
   }
 ) {
   try {
+    // If updating username, check if it's unique
+    if (data.username) {
+      const existingUser = await prisma.user.findUnique({
+        where: {
+          username: data.username,
+          NOT: {
+            clerkId: userId,
+          },
+        },
+      });
+
+      if (existingUser) {
+        throw new Error("Username already taken");
+      }
+    }
+
     const updatedUser = await prisma.user.update({
       where: { clerkId: userId },
       data,
+      include: {
+        privacySettings: true,
+      },
     });
+
+    revalidatePath(`/profile/${updatedUser.username}`);
     return updatedUser;
   } catch (error) {
     console.error("Error updating user profile", error);
@@ -128,9 +174,58 @@ export async function updatePrivacySettings(
       where: { userId: user.id },
       data: settings,
     });
+
+    revalidatePath(`/profile/${userId}`);
     return updatedSettings;
   } catch (error) {
     console.error("Error updating privacy settings", error);
+    throw error;
+  }
+}
+
+export async function getUserById(userId: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        projects: true,
+        achievements: true,
+        extracurriculars: true,
+        portfolioItems: true,
+        privacySettings: true,
+      },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return user;
+  } catch (error) {
+    console.error("Error fetching user by ID:", error);
+    throw error;
+  }
+}
+
+export async function getUserByClerkId(clerkId: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { clerkId },
+      include: {
+        projects: true,
+        achievements: true,
+        extracurriculars: true,
+        portfolioItems: true,
+        privacySettings: true,
+      },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+    return user;
+  } catch (error) {
+    console.error("Error fetching user by Clerk ID:", error);
     throw error;
   }
 }

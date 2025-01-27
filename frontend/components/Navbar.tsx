@@ -15,13 +15,13 @@ import { Button } from "./ui/button";
 
 interface NavbarProps {
   user: {
-    id: string
-    username: string | null
-    firstName: string | null
-    lastName: string | null
-    imageUrl: string
-    email: string
-  } | null
+    id?: string;
+    username?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    imageUrl?: string;
+    email?: string;
+  } | null;
 }
 
 const navItems = [
@@ -42,11 +42,15 @@ const navItems = [
 ];
 
 const Navbar: React.FC<NavbarProps> = ({ user }) => {
-  console.log("**********************");
-  console.log("User in Navbar.tsx", user);
-  console.log("**********************");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+
+  const getProfileLink = () => {
+    if (user && user.username) {
+      return `/profile/${user.username}`;
+    }
+    return "/profile";
+  };
 
   return (
     <nav className="bg-gray-900 text-white">
@@ -97,16 +101,13 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
               ))}
               {user ? (
                 <>
-                  <Button
-                    className="flex items-center gap-2"
-                    asChild
-                  >
-                    <Link href={`/profile/${user.username}`}>
+                  <Button className="flex items-center gap-2" asChild>
+                    <Link href={getProfileLink()}>
                       <UserIcon className="w-4 h-4" />
                       <span className="hidden lg:inline">Profile</span>
                     </Link>
                   </Button>
-                  <UserButton />
+                  <UserButton afterSignOutUrl="/" />
                 </>
               ) : (
                 <SignInButton mode="modal">
@@ -172,7 +173,7 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
             ))}
             {user && (
               <Link
-                href={`/profile/${user.username}`}
+                href={getProfileLink()}
                 className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-gray-700"
               >
                 Profile
