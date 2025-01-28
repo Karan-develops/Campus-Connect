@@ -30,6 +30,7 @@ const navItems = [
   { name: "Placements", href: "/placements" },
   { name: "Admissions", href: "/admissions" },
   { name: "Peers", href: "/peers" },
+  { name: "Contact Us", href: "/contact" },
   {
     name: "Campus Life",
     href: "#",
@@ -180,11 +181,11 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
               </Link>
             )}
           </div>
-          <div className="pt-4 pb-3 border-t border-gray-700">
+          {/* <div className="pt-4 pb-3 border-t border-gray-700">
             <div className="flex items-center px-5">
               <UserButton afterSignOutUrl="/" />
             </div>
-          </div>
+          </div> */}
         </div>
       )}
     </nav>

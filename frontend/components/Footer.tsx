@@ -11,6 +11,7 @@ import {
   Mail,
   Phone,
   MapPin,
+  ChevronRightCircle,
 } from "lucide-react";
 
 export default function Footer() {
@@ -72,6 +73,14 @@ export default function Footer() {
                   Peers
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/contact"
+                  className="hover:text-white transition-colors"
+                >
+                  Contact
+                </Link>
+              </li>
             </ul>
           </div>
           <div>
@@ -90,6 +99,12 @@ export default function Footer() {
               <li className="flex items-center">
                 <Mail className="w-5 h-5 mr-2" />
                 <span>info@campusdiary.edu</span>
+              </li>
+              <li className="flex items-center">
+                <ChevronRightCircle className="w-5 h-5 mr-2" />
+                <Link href={"/contact"}>
+                <span>Go to contacts Page</span>
+                </Link>
               </li>
             </ul>
           </div>
