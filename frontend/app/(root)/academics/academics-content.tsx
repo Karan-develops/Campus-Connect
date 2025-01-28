@@ -10,6 +10,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 const streams = [
   {
@@ -107,8 +108,10 @@ export default function AcademicsContent() {
             </div>
           </CardContent>
           <div className="p-4 mt-auto">
-            <Button className="w-full">
-              Learn More <ChevronRight className="ml-2 h-4 w-4" />
+            <Button className="w-full" asChild>
+              <Link href={`/academics/${encodeURIComponent(stream.name)}`}>
+                Learn More <ChevronRight className="ml-2 h-4 w-4" />
+              </Link>
             </Button>
           </div>
         </Card>
