@@ -23,26 +23,26 @@ export async function syncUser() {
     });
 
     if (existingUser) {
+      if (!existingUser.privacySettings) {
+        console.warn(`User ${existingUser.id} has no privacy settings!`);
+      }
       return existingUser;
     }
 
-    // Generate a unique username
+    // Unique username generation
     const baseUsername = user.username || primaryEmail.split("@")[0];
     let uniqueUsername = baseUsername;
-    let count = 1;
 
-    while (true) {
-      const usernameExists = await prisma.user.findUnique({
-        where: { username: uniqueUsername },
-      });
+    const existingCount = await prisma.user.count({
+      where: {
+        username: { startsWith: baseUsername },
+      },
+    });
 
-      if (!usernameExists) break;
-
-      uniqueUsername = `${baseUsername}${count}`;
-      count++;
+    if (existingCount > 0) {
+      uniqueUsername = `${baseUsername}${existingCount}`;
     }
 
-    // Create new user with all required fields
     const newUser = await prisma.user.create({
       data: {
         clerkId: user.id,
@@ -120,12 +120,10 @@ export async function updateUserProfile(
   try {
     // If updating username, check if it's unique
     if (data.username) {
-      const existingUser = await prisma.user.findUnique({
+      const existingUser = await prisma.user.findFirst({
         where: {
           username: data.username,
-          NOT: {
-            clerkId: userId,
-          },
+          clerkId: { not: userId },
         },
       });
 
@@ -197,7 +195,7 @@ export async function getUserById(userId: string) {
     });
 
     if (!user) {
-      throw new Error("User not found");
+      return null;
     }
 
     return user;
@@ -221,7 +219,7 @@ export async function getUserByClerkId(clerkId: string) {
     });
 
     if (!user) {
-      throw new Error("User not found");
+      return null;
     }
     return user;
   } catch (error) {
