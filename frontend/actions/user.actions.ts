@@ -227,3 +227,144 @@ export async function getUserByClerkId(clerkId: string) {
     throw error;
   }
 }
+
+export async function addProject(
+  userId: string,
+  projectData: { title: string; description: string; skills: string[] }
+) {
+  try {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const newProject = await prisma.project.create({
+      data: {
+        title: projectData.title,
+        description: projectData.description,
+        skills: projectData.skills,
+        userId: user.id,
+      },
+    });
+
+    revalidatePath(`/profile/${user.username}`);
+    return newProject;
+  } catch (error) {
+    console.error("Error adding project:", error);
+    throw error;
+  }
+}
+
+export async function addAchievement(
+  userId: string,
+  achievementData: { title: string; description: string; date: string }
+) {
+  try {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const parsedDate = new Date(achievementData.date);
+    if (isNaN(parsedDate.getTime())) {
+      throw new Error("Invalid date format");
+    }
+
+    const achievement = await prisma.achievement.create({
+      data: {
+        ...achievementData,
+        date: parsedDate,
+        userId: user.id,
+      },
+    });
+
+    revalidatePath(`/profile/${user.username}`);
+    return { achievement, user };
+  } catch (error) {
+    console.error("Error adding achievement:", error);
+    throw error;
+  }
+}
+
+export async function addExtracurricular(
+  userId: string,
+  extracurricularData: {
+    name: string;
+    role: string;
+    description: string;
+    startDate: string;
+    endDate?: string;
+  }
+) {
+  try {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const parsedStartDate = new Date(extracurricularData.startDate);
+    if (isNaN(parsedStartDate.getTime())) {
+      throw new Error("Invalid start date format");
+    }
+
+    const parsedEndDate = extracurricularData.endDate
+      ? new Date(extracurricularData.endDate)
+      : null;
+    if (parsedEndDate && isNaN(parsedEndDate.getTime())) {
+      throw new Error("Invalid end date format");
+    }
+
+    const extracurricular = await prisma.extracurricular.create({
+      data: {
+        ...extracurricularData,
+        startDate: parsedStartDate,
+        endDate: parsedEndDate,
+        userId: user.id,
+      },
+    });
+
+    revalidatePath(`/profile/${user.username}`);
+    return { extracurricular, user };
+  } catch (error) {
+    console.error("Error adding extracurricular:", error);
+    throw error;
+  }
+}
+
+export async function addPortfolioItem(
+  userId: string,
+  portfolioItemData: { title: string; description: string; url: string }
+) {
+  try {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    try {
+      new URL(portfolioItemData.url);
+    } catch (e) {
+      throw new Error("Invalid URL format");
+    }
+
+    const existingPortfolioItem = await prisma.portfolioItem.findFirst({
+      where: { userId: user.id, url: portfolioItemData.url },
+    });
+    if (existingPortfolioItem) {
+      throw new Error("Portfolio item with this URL already exists");
+    }
+
+    const portfolioItem = await prisma.portfolioItem.create({
+      data: {
+        ...portfolioItemData,
+        userId: user.id,
+      },
+    });
+
+    revalidatePath(`/profile/${user.username}`);
+    return { portfolioItem, user };
+  } catch (error) {
+    console.error("Error adding portfolio item:", error);
+    throw error;
+  }
+}
