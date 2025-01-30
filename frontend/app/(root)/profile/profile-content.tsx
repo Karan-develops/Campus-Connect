@@ -23,6 +23,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -36,7 +45,13 @@ import {
 import {
   updateUserProfile,
   updatePrivacySettings,
+  addProject,
+  addAchievement,
+  addExtracurricular,
+  addPortfolioItem,
+  fetchProfileData,
 } from "@/actions/user.actions";
+import { format } from "date-fns";
 
 type ProfileWithRelations = User & {
   projects: Project[];
@@ -57,6 +72,28 @@ export default function ProfileContent({
 }: ProfileContentProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedProfile, setEditedProfile] = useState(profile);
+  const [newProject, setNewProject] = useState({
+    title: "",
+    description: "",
+    skills: "",
+  });
+  const [newAchievement, setNewAchievement] = useState({
+    title: "",
+    description: "",
+    date: "",
+  });
+  const [newExtracurricular, setNewExtracurricular] = useState({
+    name: "",
+    role: "",
+    description: "",
+    startDate: "",
+    endDate: "",
+  });
+  const [newPortfolioItem, setNewPortfolioItem] = useState({
+    title: "",
+    description: "",
+    url: "",
+  });
 
   const handleEditProfile = () => {
     setIsEditing(true);
@@ -79,20 +116,53 @@ export default function ProfileContent({
     }
   };
 
-  const handleAddProject = () => {
-    // TODO: Implement adding a new project
+  const handleAddProject = async () => {
+    try {
+      await addProject(profile.id, {
+        ...newProject,
+        skills: newProject.skills.split(",").map((skill) => skill.trim()),
+      });
+      setNewProject({ title: "", description: "", skills: "" });
+      fetchProfileData(profile.id);
+    } catch (error) {
+      console.error("Error adding project:", error);
+    }
   };
 
-  const handleAddAchievement = () => {
-    // TODO: Implement adding a new achievement
+  const handleAddAchievement = async () => {
+    try {
+      await addAchievement(profile.id, newAchievement);
+      setNewAchievement({ title: "", description: "", date: "" });
+      fetchProfileData(profile.id);
+    } catch (error) {
+      console.error("Error adding achievement:", error);
+    }
   };
 
-  const handleAddExtracurricular = () => {
-    // TODO: Implement adding a new extracurricular activity
+  const handleAddExtracurricular = async () => {
+    try {
+      await addExtracurricular(profile.id, newExtracurricular);
+      setNewExtracurricular({
+        name: "",
+        role: "",
+        description: "",
+        startDate: "",
+        endDate: "",
+      });
+      fetchProfileData(profile.id);
+    } catch (error) {
+      console.error("Error adding extracurricular:", error);
+    }
   };
 
-  const handleAddPortfolioItem = () => {
-    // TODO: Implement adding a new portfolio item
+  const handleAddPortfolioItem = async () => {
+    try {
+      await addPortfolioItem(profile.id, newPortfolioItem);
+      setNewPortfolioItem({ title: "", description: "", url: "" });
+      fetchProfileData(profile.id);
+    } catch (error) {
+      console.error("Error adding portfolio item:", error);
+    }
   };
 
   const handlePrivacySettingsChange = async (
@@ -303,7 +373,7 @@ export default function ProfileContent({
                   <div className="flex flex-wrap gap-2">
                     {project.skills.map((skill, index) => (
                       <Badge key={index} variant="secondary">
-                        {skill}
+                        {skill.trim()}
                       </Badge>
                     ))}
                   </div>
@@ -311,12 +381,70 @@ export default function ProfileContent({
               </Card>
             ))}
             {isOwnProfile && (
-              <Card className="flex items-center justify-center">
-                <Button variant="ghost" onClick={handleAddProject}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Project
-                </Button>
-              </Card>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Card className="flex items-center justify-center cursor-pointer">
+                    <CardContent>
+                      <Plus className="h-8 w-8 text-muted-foreground" />
+                      <p className="mt-2 text-muted-foreground">Add Project</p>
+                    </CardContent>
+                  </Card>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add New Project</DialogTitle>
+                    <DialogDescription>
+                      Enter the details of your new project.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="project-title">Title</Label>
+                      <Input
+                        id="project-title"
+                        value={newProject.title}
+                        onChange={(e) =>
+                          setNewProject({
+                            ...newProject,
+                            title: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="project-description">Description</Label>
+                      <Textarea
+                        id="project-description"
+                        value={newProject.description}
+                        onChange={(e) =>
+                          setNewProject({
+                            ...newProject,
+                            description: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="project-skills">
+                        Skills (comma-separated)
+                      </Label>
+                      <Input
+                        id="project-skills"
+                        value={newProject.skills}
+                        onChange={(e) =>
+                          setNewProject({
+                            ...newProject,
+                            skills: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button onClick={handleAddProject}>Add Project</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             )}
           </div>
         </TabsContent>
@@ -328,7 +456,7 @@ export default function ProfileContent({
                 <CardHeader>
                   <CardTitle>{achievement.title}</CardTitle>
                   <CardDescription>
-                    {new Date(achievement.date).toLocaleDateString()}
+                    {format(new Date(achievement.date), "MMMM dd, yyyy")}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -337,12 +465,75 @@ export default function ProfileContent({
               </Card>
             ))}
             {isOwnProfile && (
-              <Card className="flex items-center justify-center p-4">
-                <Button variant="ghost" onClick={handleAddAchievement}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Achievement
-                </Button>
-              </Card>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Card className="flex items-center justify-center cursor-pointer">
+                    <CardContent>
+                      <Plus className="h-8 w-8 text-muted-foreground" />
+                      <p className="mt-2 text-muted-foreground">
+                        Add Achievement
+                      </p>
+                    </CardContent>
+                  </Card>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add New Achievement</DialogTitle>
+                    <DialogDescription>
+                      Enter the details of your new achievement.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="achievement-title">Title</Label>
+                      <Input
+                        id="achievement-title"
+                        value={newAchievement.title}
+                        onChange={(e) =>
+                          setNewAchievement({
+                            ...newAchievement,
+                            title: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="achievement-description">
+                        Description
+                      </Label>
+                      <Textarea
+                        id="achievement-description"
+                        value={newAchievement.description}
+                        onChange={(e) =>
+                          setNewAchievement({
+                            ...newAchievement,
+                            description: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="achievement-date">Date</Label>
+                      <Input
+                        id="achievement-date"
+                        type="date"
+                        value={newAchievement.date}
+                        onChange={(e) =>
+                          setNewAchievement({
+                            ...newAchievement,
+                            date: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button onClick={handleAddAchievement}>
+                      Add Achievement
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             )}
           </div>
         </TabsContent>
@@ -358,21 +549,115 @@ export default function ProfileContent({
                 <CardContent>
                   <p>{activity.description}</p>
                   <p className="text-sm text-muted-foreground mt-2">
-                    {new Date(activity.startDate).toLocaleDateString()} -
+                    {format(new Date(activity.startDate), "MMMM yyyy")} -
                     {activity.endDate
-                      ? new Date(activity.endDate).toLocaleDateString()
+                      ? format(new Date(activity.endDate), "MMMM yyyy")
                       : "Present"}
                   </p>
                 </CardContent>
               </Card>
             ))}
             {isOwnProfile && (
-              <Card className="flex items-center justify-center p-4">
-                <Button variant="ghost" onClick={handleAddExtracurricular}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Extracurricular Activity
-                </Button>
-              </Card>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Card className="flex items-center justify-center cursor-pointer">
+                    <CardContent>
+                      <Plus className="h-8 w-8 text-muted-foreground" />
+                      <p className="mt-2 text-muted-foreground">
+                        Add Extracurricular Activity
+                      </p>
+                    </CardContent>
+                  </Card>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add New Extracurricular Activity</DialogTitle>
+                    <DialogDescription>
+                      Enter the details of your new extracurricular activity.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="extracurricular-name">Name</Label>
+                      <Input
+                        id="extracurricular-name"
+                        value={newExtracurricular.name}
+                        onChange={(e) =>
+                          setNewExtracurricular({
+                            ...newExtracurricular,
+                            name: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="extracurricular-role">Role</Label>
+                      <Input
+                        id="extracurricular-role"
+                        value={newExtracurricular.role}
+                        onChange={(e) =>
+                          setNewExtracurricular({
+                            ...newExtracurricular,
+                            role: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="extracurricular-description">
+                        Description
+                      </Label>
+                      <Textarea
+                        id="extracurricular-description"
+                        value={newExtracurricular.description}
+                        onChange={(e) =>
+                          setNewExtracurricular({
+                            ...newExtracurricular,
+                            description: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="extracurricular-start-date">
+                        Start Date
+                      </Label>
+                      <Input
+                        id="extracurricular-start-date"
+                        type="date"
+                        value={newExtracurricular.startDate}
+                        onChange={(e) =>
+                          setNewExtracurricular({
+                            ...newExtracurricular,
+                            startDate: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="extracurricular-end-date">
+                        End Date (leave blank if ongoing)
+                      </Label>
+                      <Input
+                        id="extracurricular-end-date"
+                        type="date"
+                        value={newExtracurricular.endDate}
+                        onChange={(e) =>
+                          setNewExtracurricular({
+                            ...newExtracurricular,
+                            endDate: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button onClick={handleAddExtracurricular}>
+                      Add Extracurricular
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             )}
           </div>
         </TabsContent>
@@ -393,12 +678,72 @@ export default function ProfileContent({
               </Card>
             ))}
             {isOwnProfile && (
-              <Card className="flex items-center justify-center p-4">
-                <Button variant="ghost" onClick={handleAddPortfolioItem}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Portfolio Item
-                </Button>
-              </Card>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Card className="flex items-center justify-center cursor-pointer">
+                    <CardContent>
+                      <Plus className="h-8 w-8 text-muted-foreground" />
+                      <p className="mt-2 text-muted-foreground">
+                        Add Portfolio Item
+                      </p>
+                    </CardContent>
+                  </Card>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add New Portfolio Item</DialogTitle>
+                    <DialogDescription>
+                      Enter the details of your new portfolio item.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="portfolio-title">Title</Label>
+                      <Input
+                        id="portfolio-title"
+                        value={newPortfolioItem.title}
+                        onChange={(e) =>
+                          setNewPortfolioItem({
+                            ...newPortfolioItem,
+                            title: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="portfolio-description">Description</Label>
+                      <Textarea
+                        id="portfolio-description"
+                        value={newPortfolioItem.description}
+                        onChange={(e) =>
+                          setNewPortfolioItem({
+                            ...newPortfolioItem,
+                            description: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="portfolio-url">URL</Label>
+                      <Input
+                        id="portfolio-url"
+                        value={newPortfolioItem.url}
+                        onChange={(e) =>
+                          setNewPortfolioItem({
+                            ...newPortfolioItem,
+                            url: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button onClick={handleAddPortfolioItem}>
+                      Add Portfolio Item
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             )}
           </div>
         </TabsContent>

@@ -368,3 +368,27 @@ export async function addPortfolioItem(
     throw error;
   }
 }
+
+export async function fetchProfileData(userId: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        projects: true,
+        achievements: true,
+        extracurriculars: true,
+        portfolioItems: true,
+        privacySettings: true,
+      },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return user;
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    throw error;
+  }
+}
