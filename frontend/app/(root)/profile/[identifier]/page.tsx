@@ -68,7 +68,11 @@ export default async function ProfilePage({
     return (
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8 text-center">Student Profile</h1>
-        <ProfileContent profile={profile} isOwnProfile={isOwnProfile} />
+        <ProfileContent
+          cId={user.id}
+          profile={profile}
+          isOwnProfile={isOwnProfile}
+        />
       </div>
     );
   } catch (error) {

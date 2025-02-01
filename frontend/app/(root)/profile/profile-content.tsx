@@ -62,11 +62,13 @@ type ProfileWithRelations = User & {
 };
 
 interface ProfileContentProps {
+  cId:string;
   profile: ProfileWithRelations;
   isOwnProfile: boolean;
 }
 
 export default function ProfileContent({
+  cId,
   profile,
   isOwnProfile,
 }: ProfileContentProps) {
@@ -101,15 +103,24 @@ export default function ProfileContent({
 
   const handleSaveProfile = async () => {
     try {
-      await updateUserProfile(profile.id, {
-        name: editedProfile.name,
-        username: editedProfile.username,
-        major: editedProfile.major || undefined,
-        year: editedProfile.year || undefined,
-        bio: editedProfile.bio || undefined,
-        githubUrl: editedProfile.githubUrl || undefined,
-        linkedinUrl: editedProfile.linkedinUrl || undefined,
-      });
+      const filteredData = Object.fromEntries(
+        Object.entries({
+          name: editedProfile.name,
+          username: editedProfile.username,
+          major: editedProfile.major,
+          year: editedProfile.year,
+          bio: editedProfile.bio,
+          githubUrl: editedProfile.githubUrl,
+          linkedinUrl: editedProfile.linkedinUrl,
+        }).filter(([_, value]) => value !== undefined && value !== "")
+      );
+
+      if (Object.keys(filteredData).length === 0) {
+        console.error("No valid data to update");
+        return;
+      }
+
+      await updateUserProfile(cId, filteredData);
       setIsEditing(false);
     } catch (error) {
       console.error("Error saving profile:", error);
@@ -118,12 +129,12 @@ export default function ProfileContent({
 
   const handleAddProject = async () => {
     try {
-      await addProject(profile.id, {
+      await addProject(cId, {
         ...newProject,
         skills: newProject.skills.split(",").map((skill) => skill.trim()),
       });
       setNewProject({ title: "", description: "", skills: "" });
-      fetchProfileData(profile.id);
+      fetchProfileData(cId);
     } catch (error) {
       console.error("Error adding project:", error);
     }
@@ -131,9 +142,9 @@ export default function ProfileContent({
 
   const handleAddAchievement = async () => {
     try {
-      await addAchievement(profile.id, newAchievement);
+      await addAchievement(cId, newAchievement);
       setNewAchievement({ title: "", description: "", date: "" });
-      fetchProfileData(profile.id);
+      fetchProfileData(cId);
     } catch (error) {
       console.error("Error adding achievement:", error);
     }
@@ -141,7 +152,7 @@ export default function ProfileContent({
 
   const handleAddExtracurricular = async () => {
     try {
-      await addExtracurricular(profile.id, newExtracurricular);
+      await addExtracurricular(cId, newExtracurricular);
       setNewExtracurricular({
         name: "",
         role: "",
@@ -149,7 +160,7 @@ export default function ProfileContent({
         startDate: "",
         endDate: "",
       });
-      fetchProfileData(profile.id);
+      fetchProfileData(cId);
     } catch (error) {
       console.error("Error adding extracurricular:", error);
     }
@@ -157,9 +168,9 @@ export default function ProfileContent({
 
   const handleAddPortfolioItem = async () => {
     try {
-      await addPortfolioItem(profile.id, newPortfolioItem);
+      await addPortfolioItem(cId, newPortfolioItem);
       setNewPortfolioItem({ title: "", description: "", url: "" });
-      fetchProfileData(profile.id);
+      fetchProfileData(cId);
     } catch (error) {
       console.error("Error adding portfolio item:", error);
     }
@@ -174,7 +185,7 @@ export default function ProfileContent({
           ...profile.privacySettings,
           [setting]: !profile.privacySettings[setting],
         };
-        await updatePrivacySettings(profile.id, updatedSettings);
+        await updatePrivacySettings(cId, updatedSettings);
         setEditedProfile((prev) => ({
           ...prev,
           privacySettings: updatedSettings,

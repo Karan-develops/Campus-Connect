@@ -118,6 +118,9 @@ export async function updateUserProfile(
   }
 ) {
   try {
+    if (!data || Object.keys(data).length === 0) {
+      throw new Error("Invalid update data: No fields provided");
+    }
     // If updating username, check if it's unique
     if (data.username) {
       const existingUser = await prisma.user.findFirst({
