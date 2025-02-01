@@ -203,7 +203,7 @@ export async function updatePrivacySettings(
 export async function getUserById(userId: string) {
   try {
     const user = await prisma.user.findUnique({
-      where: { id: userId },
+      where: { clerkId: userId },
       include: {
         projects: true,
         achievements: true,
@@ -252,7 +252,7 @@ export async function addProject(
   projectData: { title: string; description: string; skills: string[] }
 ) {
   try {
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const user = await prisma.user.findUnique({ where: { clerkId: userId } });
     if (!user) {
       throw new Error("User not found");
     }
@@ -279,7 +279,7 @@ export async function addAchievement(
   achievementData: { title: string; description: string; date: string }
 ) {
   try {
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const user = await prisma.user.findUnique({ where: { clerkId: userId } });
     if (!user) {
       throw new Error("User not found");
     }
@@ -316,7 +316,7 @@ export async function addExtracurricular(
   }
 ) {
   try {
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const user = await prisma.user.findUnique({ where: { clerkId: userId } });
     if (!user) {
       throw new Error("User not found");
     }
@@ -355,7 +355,7 @@ export async function addPortfolioItem(
   portfolioItemData: { title: string; description: string; url: string }
 ) {
   try {
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const user = await prisma.user.findUnique({ where: { clerkId: userId } });
     if (!user) {
       throw new Error("User not found");
     }
@@ -391,7 +391,7 @@ export async function addPortfolioItem(
 export async function fetchProfileData(userId: string) {
   try {
     const user = await prisma.user.findUnique({
-      where: { id: userId },
+      where: { clerkId: userId },
       include: {
         projects: true,
         achievements: true,
