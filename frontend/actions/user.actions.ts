@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function syncUser() {
   try {
@@ -121,6 +122,14 @@ export async function updateUserProfile(
     if (!data || Object.keys(data).length === 0) {
       throw new Error("Invalid update data: No fields provided");
     }
+    const currentUser = await prisma.user.findUnique({
+      where: { clerkId: userId },
+      select: { username: true },
+    });
+
+    if (!currentUser) {
+      throw new Error("User not found");
+    }
     // If updating username, check if it's unique
     if (data.username) {
       const existingUser = await prisma.user.findFirst({
@@ -143,6 +152,13 @@ export async function updateUserProfile(
       },
     });
 
+    if (
+      data.username &&
+      currentUser &&
+      data.username !== currentUser.username
+    ) {
+      redirect(`/profile/${updatedUser.username}`);
+    }
     revalidatePath(`/profile/${updatedUser.username}`);
     return updatedUser;
   } catch (error) {
