@@ -5,6 +5,7 @@ import { ThemeProvider } from "next-themes";
 import { ClerkProvider } from "@clerk/nextjs";
 import NavbarWrapper from "@/components/NavbarWrapper";
 import Footer from "@/components/Footer";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,8 +41,9 @@ export default function RootLayout({
           >
             <NavbarWrapper />
             {children}
-            <Footer/>
+            <Footer />
           </ThemeProvider>
+          <Toaster />
         </body>
       </html>
     </ClerkProvider>

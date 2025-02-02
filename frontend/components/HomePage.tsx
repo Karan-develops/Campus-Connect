@@ -133,7 +133,7 @@ function CTASection() {
           Join our community of learners and innovators today.
         </p>
         <Button asChild size="lg">
-          <Link href="/admissions">Apply Now</Link>
+          <Link href="/apply">Apply Now</Link>
         </Button>
       </div>
     </section>

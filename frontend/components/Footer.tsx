@@ -51,10 +51,10 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/campus-life/clubs"
+                  href="/apply"
                   className="hover:text-white transition-colors"
                 >
-                  Campus Life
+                  Apply Now
                 </Link>
               </li>
               <li>
