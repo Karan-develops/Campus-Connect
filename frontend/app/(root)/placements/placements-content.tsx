@@ -11,59 +11,26 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-const placementStats = [
-  { year: "2023", percentage: 95, averageSalary: "₹12.5 LPA" },
-  { year: "2022", percentage: 92, averageSalary: "₹11.8 LPA" },
-  { year: "2021", percentage: 88, averageSalary: "₹10.5 LPA" },
-];
-
-const topRecruiters = [
-  { name: "TechCorp", logo: "/placeholder.svg?height=100&width=100" },
-  { name: "InnovaSoft", logo: "/placeholder.svg?height=100&width=100" },
-  { name: "DataDynamics", logo: "/placeholder.svg?height=100&width=100" },
-  { name: "CloudNine", logo: "/placeholder.svg?height=100&width=100" },
-  { name: "AI Solutions", logo: "/placeholder.svg?height=100&width=100" },
-  { name: "CyberGuard", logo: "/placeholder.svg?height=100&width=100" },
-];
-
-const successStories = [
-  {
-    name: "Priya Sharma",
-    batch: "2023",
-    company: "TechCorp",
-    role: "Software Engineer",
-    image: "/placeholder.svg?height=100&width=100",
-    quote:
-      "The placement cell at our college provided excellent guidance and opportunities, helping me land my dream job at TechCorp.",
-  },
-  {
-    name: "Rahul Verma",
-    batch: "2022",
-    company: "DataDynamics",
-    role: "Data Scientist",
-    image: "/placeholder.svg?height=100&width=100",
-    quote:
-      "The skills I gained during my time at college were instrumental in securing a position as a Data Scientist at DataDynamics.",
-  },
-  {
-    name: "Ananya Patel",
-    batch: "2021",
-    company: "AI Solutions",
-    role: "Machine Learning Engineer",
-    image: "/placeholder.svg?height=100&width=100",
-    quote:
-      "The exposure to cutting-edge technologies and industry partnerships at our college opened up amazing career opportunities for me.",
-  },
-];
+import { useEffect, useState } from "react";
 
 export default function PlacementsContent() {
+  const [data, setData] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch("/api/placements");
+      const json = await res.json();
+      setData(json);
+    };
+    fetchData();
+  }, []);
+  if (!data) return <p>Loading...</p>;
   return (
     <div className="space-y-8">
       <section>
         <h2 className="text-2xl font-semibold mb-4">Placement Statistics</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {placementStats.map((stat) => (
+          {data.placements.map((stat: any) => (
             <Card key={stat.year}>
               <CardHeader>
                 <CardTitle>{stat.year} Placements</CardTitle>
@@ -88,7 +55,7 @@ export default function PlacementsContent() {
       <section>
         <h2 className="text-2xl font-semibold mb-4">Top Recruiters</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-          {topRecruiters.map((recruiter) => (
+          {data.recruiters.map((recruiter:any) => (
             <Card
               key={recruiter.name}
               className="flex flex-col items-center justify-center p-4"
@@ -117,9 +84,9 @@ export default function PlacementsContent() {
           {["2023", "2022", "2021"].map((year) => (
             <TabsContent key={year} value={year}>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {successStories
-                  .filter((story) => story.batch === year)
-                  .map((story) => (
+                {data.successStories
+                  .filter((story:any) => story.batch === year)
+                  .map((story:any) => (
                     <Card key={story.name}>
                       <CardHeader>
                         <div className="flex items-center space-x-4">
@@ -128,7 +95,7 @@ export default function PlacementsContent() {
                             <AvatarFallback>
                               {story.name
                                 .split(" ")
-                                .map((n) => n[0])
+                                .map((n:any) => n[0])
                                 .join("")}
                             </AvatarFallback>
                           </Avatar>

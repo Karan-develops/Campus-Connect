@@ -3,6 +3,9 @@ import { config } from "dotenv";
 import cors from "cors";
 import { connectDb } from "./db/connectDb.js";
 
+// Routes Import
+import placementsRouter from "./routes/placement.route.js";
+
 config();
 
 const app = express();
@@ -18,6 +21,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsConfiguration));
 
 connectDb();
+
+// Routes
+app.use("/api/placements", placementsRouter);
+
 
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
   res.status(200).json({
