@@ -4,7 +4,8 @@ import {
   Recruiter,
   SuccessStory,
 } from "../models/demoPlacements.models.js";
-
+import { config } from "dotenv";
+config();
 const placementStats = [
   { year: "2023", percentage: 95, averageSalary: "₹12.5 LPA" },
   { year: "2022", percentage: 92, averageSalary: "₹11.8 LPA" },
