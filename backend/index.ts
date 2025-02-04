@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
 import { config } from "dotenv";
 import cors from "cors";
-import { connectDb } from "./db/connectDb";
+import { connectDb } from "./db/connectDb.js";
 
 config();
 

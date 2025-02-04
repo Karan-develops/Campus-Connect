@@ -1,9 +1,9 @@
-import { connectDb } from "../db/connectDb";
+import { connectDb } from "../db/connectDb.js";
 import {
   Placement,
   Recruiter,
   SuccessStory,
-} from "../models/demoPlacements.models";
+} from "../models/demoPlacements.models.js";
 
 const placementStats = [
   { year: "2023", percentage: 95, averageSalary: "₹12.5 LPA" },
@@ -14,6 +14,10 @@ const placementStats = [
 const topRecruiters = [
   { name: "TechCorp", logo: "/placeholder.svg?height=100&width=100" },
   { name: "InnovaSoft", logo: "/placeholder.svg?height=100&width=100" },
+  { name: "DataDynamics", logo: "/placeholder.svg?height=100&width=100" },
+  { name: "CloudNine", logo: "/placeholder.svg?height=100&width=100" },
+  { name: "AI Solutions", logo: "/placeholder.svg?height=100&width=100" },
+  { name: "CyberGuard", logo: "/placeholder.svg?height=100&width=100" },
 ];
 
 const successStories = [
@@ -24,6 +28,24 @@ const successStories = [
     role: "Software Engineer",
     image: "/placeholder.svg?height=100&width=100",
     quote: "The placement cell helped me land my dream job at TechCorp.",
+  },
+  {
+    name: "Rahul Verma",
+    batch: "2022",
+    company: "DataDynamics",
+    role: "Data Scientist",
+    image: "/placeholder.svg?height=100&width=100",
+    quote:
+      "The skills I gained during my time at college were instrumental in securing a position as a Data Scientist at DataDynamics.",
+  },
+  {
+    name: "Ananya Patel",
+    batch: "2021",
+    company: "AI Solutions",
+    role: "Machine Learning Engineer",
+    image: "/placeholder.svg?height=100&width=100",
+    quote:
+      "The exposure to cutting-edge technologies and industry partnerships at our college opened up amazing career opportunities for me.",
   },
 ];
 
@@ -39,7 +61,7 @@ const seedDatabase = async () => {
   await SuccessStory.insertMany(successStories);
 
   console.log("Database seeded successfully!");
-  process.exit();
+  globalThis.process.exit();
 };
 
 seedDatabase();
