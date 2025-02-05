@@ -8,11 +8,12 @@ export const metadata: Metadata = {
     "Explore detailed information about our academic programs at Campus Diary.",
 };
 
-export default function LearnMorePage({
-  params,
+export default async function LearnMorePage({
+  params:paramsPromise,
 }: {
-  params: { program: string };
+  params: Promise<{ program: string }>;
 }) {
+  const params = await paramsPromise;
   const programName = decodeURIComponent(params.program.replace(/-/g, " "));
 
   // DB se data lana h baadme
@@ -20,9 +21,11 @@ export default function LearnMorePage({
     "B.Tech Computer Science and Engineering",
     "B.Tech Information Technology",
     "B.Tech Electronics and Communication",
-    "Bachelor of Arts",
+    "Bachelor of Commerce",
     "Bachelor of Business Administration",
-    "B.Sc Computer Science",
+    "B.Tech Artifical Intelligence and Data Science",
+    "B.Tech Mechanical Engineering",
+    "B.Tech AI and Machine Learning",
   ];
 
   if (!validPrograms.includes(programName)) {

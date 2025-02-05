@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Book, Trophy, Briefcase, GraduationCap, Calendar } from "lucide-react";
+import Link from "next/link";
 
 interface LearnMoreContentProps {
   programName: string;
@@ -51,17 +52,17 @@ export default function LearnMoreContent({
         {
           name: "Dr. Sarah Johnson",
           role: "Professor",
-          image: "/placeholder.svg?height=100&width=100",
+          image: "",
         },
         {
           name: "Dr. Michael Chen",
           role: "Associate Professor",
-          image: "/placeholder.svg?height=100&width=100",
+          image: "",
         },
         {
           name: "Dr. Emily Rodriguez",
           role: "Assistant Professor",
-          image: "/placeholder.svg?height=100&width=100",
+          image: "",
         },
       ],
       statistics: {
@@ -289,7 +290,7 @@ export default function LearnMoreContent({
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center space-y-4">
-          <Button size="lg">Apply Now</Button>
+          <Button size="lg"><Link href={"/apply"}>Apply Now</Link></Button>
           <p className="text-sm text-muted-foreground">
             Have questions?{" "}
             <a href="/contact" className="underline">
