@@ -5,6 +5,7 @@ import { connectDb } from "./db/connectDb.js";
 
 // Routes Import
 import placementsRouter from "./routes/placement.route.js";
+import contactInfoRouter from "./routes/contactInfo.route.js";
 
 config();
 
@@ -24,7 +25,7 @@ connectDb();
 
 // Routes
 app.use("/api/placements", placementsRouter);
-
+app.use("/api/contact-info", contactInfoRouter);
 
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
   res.status(200).json({

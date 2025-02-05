@@ -108,7 +108,7 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
                       <span className="hidden lg:inline">Profile</span>
                     </Link>
                   </Button>
-                  <UserButton afterSignOutUrl="/" />
+                  {/* <UserButton afterSignOutUrl="/" /> */}
                 </>
               ) : (
                 <SignInButton mode="modal">

@@ -20,6 +20,7 @@ import {
   departmentContacts,
   locations,
 } from "@/app/constants/contact.constants";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ContactContent() {
   const [formData, setFormData] = useState({
@@ -29,6 +30,8 @@ export default function ContactContent() {
     message: "",
   });
 
+  const { toast } = useToast();
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -36,11 +39,39 @@ export default function ContactContent() {
     setFormData((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Form data backend pe bhejna h
-    console.log("Form submitted:", formData);
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    try {
+      const res = await fetch("/api/contact-info", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to send message");
+      }
+
+      const result = await res.json();
+      console.log("Success:", result);
+      toast({
+        variant: "default",
+        title: "Application Submitted",
+        description:
+          "Your application has been successfully submitted. We will contact you soon.",
+      });
+
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to submit form.",
+      });
+    }
   };
 
   return (
