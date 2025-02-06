@@ -12,19 +12,39 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
+import Loader1 from "@/components/Loader1";
 
 export default function PlacementsContent() {
   const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch("/api/placements");
-      const json = await res.json();
-      setData(json);
+      try {
+        setLoading(true);
+        const res = await fetch("/api/placements");
+        const json = await res.json();
+        setData(json);
+      } catch (error) {
+        setLoading(false);
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchData();
   }, []);
-  if (!data) return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <div className="flex justify-center">
+        <Loader1 />
+      </div>
+    );
+  }
+
+  if (!data) {
+    return <div>Error loading program information.</div>;
+  }
   return (
     <div className="space-y-8">
       <section>
@@ -55,7 +75,7 @@ export default function PlacementsContent() {
       <section>
         <h2 className="text-2xl font-semibold mb-4">Top Recruiters</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-          {data.recruiters.map((recruiter:any) => (
+          {data.recruiters.map((recruiter: any) => (
             <Card
               key={recruiter.name}
               className="flex flex-col items-center justify-center p-4"
@@ -85,8 +105,8 @@ export default function PlacementsContent() {
             <TabsContent key={year} value={year}>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {data.successStories
-                  .filter((story:any) => story.batch === year)
-                  .map((story:any) => (
+                  .filter((story: any) => story.batch === year)
+                  .map((story: any) => (
                     <Card key={story.name}>
                       <CardHeader>
                         <div className="flex items-center space-x-4">
@@ -95,7 +115,7 @@ export default function PlacementsContent() {
                             <AvatarFallback>
                               {story.name
                                 .split(" ")
-                                .map((n:any) => n[0])
+                                .map((n: any) => n[0])
                                 .join("")}
                             </AvatarFallback>
                           </Avatar>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -14,71 +14,60 @@ import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Book, Trophy, Briefcase, GraduationCap, Calendar } from "lucide-react";
 import Link from "next/link";
+import Loader1 from "@/components/Loader1";
 
 interface LearnMoreContentProps {
   programName: string;
 }
 
+interface ProgramData {
+  description: string;
+  duration: string;
+  credits: number;
+  statistics: {
+    placementRate: number;
+    averageSalary: string;
+    internshipPartners: number;
+    researchPublications: number;
+  };
+  courses: { year: number; name: string }[];
+  faculty: { name: string; role: string; image: string }[];
+  careers: string[];
+}
+
 export default function LearnMoreContent({
   programName,
 }: LearnMoreContentProps) {
-  const [activeTab, setActiveTab] = useState("overview");
+  const [programData, setProgramData] = useState<ProgramData | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Baadme database se data lana h
-  const programData = {
-    "B.Tech Computer Science and Engineering": {
-      description:
-        "Our B.Tech in Computer Science and Engineering program is designed to provide students with a strong foundation in computer science theory and practice. Students will learn cutting-edge technologies and software development practices, preparing them for successful careers in the tech industry.",
-      duration: "4 years",
-      credits: 160,
-      careers: [
-        "Software Engineer",
-        "Data Scientist",
-        "AI/ML Engineer",
-        "Cloud Architect",
-        "Cybersecurity Specialist",
-      ],
-      courses: [
-        { name: "Data Structures and Algorithms", year: 1 },
-        { name: "Object-Oriented Programming", year: 1 },
-        { name: "Database Management Systems", year: 2 },
-        { name: "Computer Networks", year: 2 },
-        { name: "Artificial Intelligence", year: 3 },
-        { name: "Machine Learning", year: 3 },
-        { name: "Cloud Computing", year: 4 },
-        { name: "Blockchain Technology", year: 4 },
-      ],
-      faculty: [
-        {
-          name: "Dr. Sarah Johnson",
-          role: "Professor",
-          image: "",
-        },
-        {
-          name: "Dr. Michael Chen",
-          role: "Associate Professor",
-          image: "",
-        },
-        {
-          name: "Dr. Emily Rodriguez",
-          role: "Assistant Professor",
-          image: "",
-        },
-      ],
-      statistics: {
-        placementRate: 95,
-        averageSalary: "₹12.5 LPA",
-        internshipPartners: 50,
-        researchPublications: 75,
-      },
-    },
-    // Add data for other programs here
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `/api/academic-info/${encodeURIComponent(programName)}`
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const pData = await response.json();
+        setProgramData(pData.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const data = programData[programName as keyof typeof programData];
+    fetchData();
+  }, [programName]);
 
-  if (!data) {
-    return <div>Program data not found</div>;
+  if (loading) {
+    return <div className="flex justify-center"><Loader1/></div>;
+  }
+
+  if (!programData) {
+    return <div>Error loading program information.</div>;
   }
 
   return (
@@ -86,25 +75,27 @@ export default function LearnMoreContent({
       <Card>
         <CardHeader>
           <CardTitle>Program Overview</CardTitle>
-          <CardDescription>{data.description}</CardDescription>
+          <CardDescription>{programData.description}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="flex items-center space-x-2">
               <Calendar className="h-5 w-5 text-muted-foreground" />
-              <span>Duration: {data.duration}</span>
+              <span>Duration: {programData.duration}</span>
             </div>
             <div className="flex items-center space-x-2">
               <GraduationCap className="h-5 w-5 text-muted-foreground" />
-              <span>Total Credits: {data.credits}</span>
+              <span>Total Credits: {programData.credits}</span>
             </div>
             <div className="flex items-center space-x-2">
               <Briefcase className="h-5 w-5 text-muted-foreground" />
-              <span>Placement Rate: {data.statistics.placementRate}%</span>
+              <span>
+                Placement Rate: {programData.statistics.placementRate}%
+              </span>
             </div>
             <div className="flex items-center space-x-2">
               <Trophy className="h-5 w-5 text-muted-foreground" />
-              <span>Avg. Salary: {data.statistics.averageSalary}</span>
+              <span>Avg. Salary: {programData.statistics.averageSalary}</span>
             </div>
           </div>
         </CardContent>
@@ -166,7 +157,7 @@ export default function LearnMoreContent({
                     </CardHeader>
                     <CardContent>
                       <ul className="space-y-2">
-                        {data.courses
+                        {programData.courses
                           .filter((course) => course.year === year)
                           .map((course, index) => (
                             <li
@@ -195,7 +186,7 @@ export default function LearnMoreContent({
             </CardHeader>
             <CardContent>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {data.faculty.map((member, index) => (
+                {programData.faculty.map((member, index) => (
                   <Card key={index}>
                     <CardContent className="flex flex-col items-center p-6">
                       <Avatar className="h-24 w-24 mb-4">
@@ -233,7 +224,7 @@ export default function LearnMoreContent({
                     Popular Career Paths
                   </h3>
                   <ul className="space-y-2">
-                    {data.careers.map((career, index) => (
+                    {programData.careers.map((career, index) => (
                       <li key={index} className="flex items-center space-x-2">
                         <Briefcase className="h-4 w-4 text-muted-foreground" />
                         <span>{career}</span>
@@ -249,29 +240,33 @@ export default function LearnMoreContent({
                     <div>
                       <div className="flex justify-between mb-1">
                         <span>Placement Rate</span>
-                        <span>{data.statistics.placementRate}%</span>
+                        <span>{programData.statistics.placementRate}%</span>
                       </div>
                       <Progress
-                        value={data.statistics.placementRate}
+                        value={programData.statistics.placementRate}
                         className="w-full"
                       />
                     </div>
                     <div>
                       <div className="flex justify-between mb-1">
                         <span>Average Salary</span>
-                        <span>{data.statistics.averageSalary}</span>
+                        <span>{programData.statistics.averageSalary}</span>
                       </div>
                     </div>
                     <div>
                       <div className="flex justify-between mb-1">
                         <span>Internship Partners</span>
-                        <span>{data.statistics.internshipPartners}+</span>
+                        <span>
+                          {programData.statistics.internshipPartners}+
+                        </span>
                       </div>
                     </div>
                     <div>
                       <div className="flex justify-between mb-1">
                         <span>Research Publications</span>
-                        <span>{data.statistics.researchPublications}+</span>
+                        <span>
+                          {programData.statistics.researchPublications}+
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -290,7 +285,9 @@ export default function LearnMoreContent({
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center space-y-4">
-          <Button size="lg"><Link href={"/apply"}>Apply Now</Link></Button>
+          <Button size="lg">
+            <Link href={"/apply"}>Apply Now</Link>
+          </Button>
           <p className="text-sm text-muted-foreground">
             Have questions?{" "}
             <a href="/contact" className="underline">

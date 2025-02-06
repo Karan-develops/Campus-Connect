@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default async function LearnMorePage({
-  params:paramsPromise,
+  params: paramsPromise,
 }: {
   params: Promise<{ program: string }>;
 }) {
