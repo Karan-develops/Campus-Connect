@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const eventCategories = [
   {
@@ -168,7 +169,9 @@ export default function EventsContent() {
         <p className="mb-6">
           Want to organize an event on campus? We'd love to hear your ideas!
         </p>
-        <Button size="lg">Propose an Event</Button>
+        <Button size="lg">
+          <Link href={"/campus-life/create"}>Propose an Event</Link>
+        </Button>
       </section>
     </div>
   );

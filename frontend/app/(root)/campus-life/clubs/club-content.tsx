@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import Link from "next/link";
 
 const clubCategories = [
   {
@@ -192,7 +193,9 @@ export default function StudentsClubContent() {
           <li>Submit a club proposal to the Student Activities Office</li>
           <li>Attend a new club orientation session</li>
         </ol>
-        <Button>Get Started</Button>
+        <Button>
+          <Link href={"/campus-life/create"}>Get Started</Link>
+        </Button>
       </section>
     </div>
   );
