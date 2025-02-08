@@ -68,7 +68,7 @@ export default function SportsContent() {
               </CardHeader>
               <CardContent>
                 <img
-                  src={sport.image || "/placeholder.svg"}
+                  src={sport.image || ""}
                   alt={sport.name}
                   className="w-full h-40 object-cover rounded-md mb-4"
                 />
@@ -89,7 +89,7 @@ export default function SportsContent() {
               </CardHeader>
               <CardContent>
                 <img
-                  src={facility.image || "/placeholder.svg"}
+                  src={facility.image || ""}
                   alt={facility.name}
                   className="w-full h-48 object-cover rounded-md mb-4"
                 />
