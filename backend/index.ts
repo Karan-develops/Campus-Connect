@@ -7,6 +7,7 @@ import { connectDb } from "./db/connectDb.js";
 import placementsRouter from "./routes/placement.route.js";
 import contactInfoRouter from "./routes/contactInfo.route.js";
 import academicInfoRouter from "./routes/academicInfo.route.js";
+import sportsInfoRouter from "./routes/demoSportsData.route.js";
 
 config();
 
@@ -28,6 +29,7 @@ connectDb();
 app.use("/api/placements", placementsRouter);
 app.use("/api/contact-info", contactInfoRouter);
 app.use("/api/academic-info", academicInfoRouter);
+app.use("/api/sports-info", sportsInfoRouter);
 
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
   res.status(200).json({
