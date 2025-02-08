@@ -35,7 +35,7 @@ const students = [
     major: "Computer Science",
     year: "Junior",
     skills: ["React", "Node.js", "Python"],
-    image: "/placeholder.svg?height=100&width=100",
+    image: "",
   },
   {
     id: 2,
@@ -43,7 +43,7 @@ const students = [
     major: "Electrical Engineering",
     year: "Senior",
     skills: ["C++", "MATLAB", "Circuit Design"],
-    image: "/placeholder.svg?height=100&width=100",
+    image: "",
   },
   {
     id: 3,
@@ -51,7 +51,7 @@ const students = [
     major: "Business Administration",
     year: "Sophomore",
     skills: ["Marketing", "Data Analysis", "Public Speaking"],
-    image: "/placeholder.svg?height=100&width=100",
+    image: "",
   },
   {
     id: 4,
@@ -59,7 +59,7 @@ const students = [
     major: "Graphic Design",
     year: "Senior",
     skills: ["Adobe Creative Suite", "UI/UX Design", "Typography"],
-    image: "/placeholder.svg?height=100&width=100",
+    image: "",
   },
 ];
 

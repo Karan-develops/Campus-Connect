@@ -23,7 +23,7 @@ export default function HomePage() {
 function HeroSection() {
   return (
     <section className="relative py-20 lg:py-32 overflow-hidden">
-      <div className="absolute inset-0 bg-[url('/placeholder.svg?height=1080&width=1920')] bg-cover bg-center"></div>
+      <div className="absolute inset-0 bg-cover bg-center"></div>
       <div className="absolute inset-0 bg-black bg-opacity-75"></div>
       <div className="relative container mx-auto px-4 z-10">
         <div className="text-center">
