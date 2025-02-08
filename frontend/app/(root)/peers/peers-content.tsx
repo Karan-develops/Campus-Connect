@@ -243,6 +243,7 @@ export default function PeersContent() {
                     setNewProject({ ...newProject, title: e.target.value })
                   }
                   placeholder="Enter your project title"
+                  autoComplete="off"
                 />
               </div>
               <div>
