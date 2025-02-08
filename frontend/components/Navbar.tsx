@@ -38,6 +38,7 @@ const navItems = [
       { name: "Student Clubs", href: "/campus-life/clubs" },
       { name: "Sports", href: "/campus-life/sports" },
       { name: "Events", href: "/campus-life/events" },
+      { name: "Organize", href: "/campus-life/create" },
     ],
   },
 ];

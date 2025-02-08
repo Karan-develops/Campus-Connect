@@ -66,8 +66,7 @@ export default function CreateContent() {
       description: `Your ${activeTab} has been created successfully.`,
     });
 
-    // FIXME:
-    router.push(`/${activeTab}s`);
+    router.push(`/campus-life/${activeTab}s`);
   };
 
   return (
