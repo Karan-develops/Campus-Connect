@@ -81,7 +81,7 @@ export default function PlacementsContent() {
               className="flex flex-col items-center justify-center p-4"
             >
               <img
-                src={recruiter.logo || "/placeholder.svg"}
+                src={recruiter.logo || ""}
                 alt={`${recruiter.name} logo`}
                 className="w-16 h-16 object-contain mb-2"
               />

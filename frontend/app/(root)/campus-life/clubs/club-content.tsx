@@ -61,7 +61,7 @@ export default function StudentsClubContent() {
                     </CardHeader>
                     <CardContent>
                       <img
-                        src={club.image || "/placeholder.svg"}
+                        src={club.image || ""}
                         alt={club.name}
                         className="w-full h-40 object-cover rounded-md mb-4"
                       />

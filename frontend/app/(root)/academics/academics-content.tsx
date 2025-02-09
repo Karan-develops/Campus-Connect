@@ -27,7 +27,7 @@ export default function AcademicsContent() {
           </CardHeader>
           <CardContent className="flex-grow">
             <img
-              src={stream.image || "/placeholder.svg"}
+              src={stream.image || ""}
               alt={`${stream.name} illustration`}
               className="w-full h-40 object-cover rounded-md mb-4"
             />
