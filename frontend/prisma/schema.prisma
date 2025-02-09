@@ -30,6 +30,9 @@ model User {
   extracurriculars Extracurricular[]
   portfolioItems   PortfolioItem[]
   privacySettings  PrivacySettings?
+  events           Event[]
+  clubs            Club[]
+  sports           Sport[]
   sentMessages     Message[]         @relation("SentMessages")
   receivedMessages Message[]         @relation("ReceivedMessages")
   createdAt        DateTime          @default(now())
@@ -104,4 +107,40 @@ model Message {
   receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  name        String
+  date        String
+  location    String
+  description String
+  creatorId   String
+  creator     User     @relation(fields: [creatorId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Club {
+  id           String   @id @default(cuid())
+  name         String
+  category     String
+  description  String
+  contactEmail String
+  creatorId    String
+  creator      User     @relation(fields: [creatorId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Sport {
+  id          String   @id @default(cuid())
+  name        String
+  type        String
+  description String
+  coach       String
+  creatorId   String
+  creator     User     @relation(fields: [creatorId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

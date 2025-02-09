@@ -10,18 +10,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import DynamicForm, { type FormField } from "@/components/CreateForm";
 import { useToast } from "@/hooks/use-toast";
+import DynamicForm, { FormField } from "@/components/CreateForm";
 
 const eventFields: FormField[] = [
   { name: "name", label: "Event Name", type: "text" },
   { name: "date", label: "Event Date", type: "text" },
-  {
-    name: "category",
-    label: "Category",
-    type: "select",
-    options: ["Academic", "Cultural", "Career"],
-  },
   { name: "location", label: "Location", type: "text" },
   { name: "description", label: "Description", type: "textarea" },
 ];
@@ -32,7 +26,7 @@ const clubFields: FormField[] = [
     name: "category",
     label: "Category",
     type: "select",
-    options: ["Academic", "Cultural", "Sports", "Community Service"],
+    options: ["Academic", "Cultural", "Sports", "Other"],
   },
   { name: "description", label: "Description", type: "textarea" },
   { name: "contactEmail", label: "Contact Email", type: "text" },
@@ -52,21 +46,46 @@ const sportFields: FormField[] = [
 
 export default function CreateContent() {
   const [activeTab, setActiveTab] = useState("event");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-
   const { toast } = useToast();
 
   const handleSubmit = async (data: Record<string, string>) => {
-    // TODO:
-    // Baadme backend pe bhejna hai
-    console.log("Form submitted:", activeTab, data);
+    setIsSubmitting(true);
+    try {
+      const response = await fetch("/api/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: activeTab,
+          data,
+        }),
+      });
 
-    toast({
-      title: "default",
-      description: `Your ${activeTab} has been created successfully.`,
-    });
+      if (!response.ok) {
+        throw new Error("Failed to create item");
+      }
 
-    router.push(`/campus-life/${activeTab}s`);
+      const result = await response.json();
+
+      toast({
+        title: "Success",
+        description: `Your ${activeTab} has been created successfully.`,
+      });
+
+      router.push(`/campus-life/${activeTab}s`);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast({
+        title: "Error",
+        description: "There was an error creating your item. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -88,21 +107,24 @@ export default function CreateContent() {
             <DynamicForm
               fields={eventFields}
               onSubmit={handleSubmit}
-              submitButtonText="Create Event"
+              submitButtonText={isSubmitting ? "Creating..." : "Create Event"}
+              isSubmitting={isSubmitting}
             />
           </TabsContent>
           <TabsContent value="club">
             <DynamicForm
               fields={clubFields}
               onSubmit={handleSubmit}
-              submitButtonText="Create Club"
+              submitButtonText={isSubmitting ? "Creating..." : "Create Club"}
+              isSubmitting={isSubmitting}
             />
           </TabsContent>
           <TabsContent value="sport">
             <DynamicForm
               fields={sportFields}
               onSubmit={handleSubmit}
-              submitButtonText="Create Sport"
+              submitButtonText={isSubmitting ? "Creating..." : "Create Sport"}
+              isSubmitting={isSubmitting}
             />
           </TabsContent>
         </Tabs>

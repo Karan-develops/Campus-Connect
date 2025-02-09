@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Loader2 } from "lucide-react";
 
 export type FormField = {
   name: string;
@@ -34,12 +35,14 @@ type DynamicFormProps = {
   fields: FormField[];
   onSubmit: SubmitHandler<Record<string, string>>;
   submitButtonText: string;
+  isSubmitting: boolean;
 };
 
 const DynamicForm: React.FC<DynamicFormProps> = ({
   fields,
   onSubmit,
   submitButtonText,
+  isSubmitting,
 }) => {
   const formSchema = z.object(
     fields.reduce((acc, field) => {
@@ -104,7 +107,16 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
             )}
           />
         ))}
-        <Button type="submit">{submitButtonText}</Button>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              {submitButtonText}
+            </>
+          ) : (
+            submitButtonText
+          )}
+        </Button>
       </form>
     </Form>
   );
