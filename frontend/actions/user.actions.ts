@@ -92,6 +92,9 @@ export async function getProfileByUsername(username: string) {
         extracurriculars: true,
         portfolioItems: true,
         privacySettings: true,
+        clubs: true,
+        sports: true,
+        events: true,
       },
     });
 
@@ -210,6 +213,9 @@ export async function getUserById(userId: string) {
         extracurriculars: true,
         portfolioItems: true,
         privacySettings: true,
+        events: true,
+        sports: true,
+        clubs: true,
       },
     });
 
@@ -234,6 +240,9 @@ export async function getUserByClerkId(clerkId: string) {
         extracurriculars: true,
         portfolioItems: true,
         privacySettings: true,
+        clubs: true,
+        sports: true,
+        events: true,
       },
     });
 
@@ -398,6 +407,9 @@ export async function fetchProfileData(userId: string) {
         extracurriculars: true,
         portfolioItems: true,
         privacySettings: true,
+        clubs: true,
+        sports: true,
+        events: true,
       },
     });
 
@@ -408,6 +420,32 @@ export async function fetchProfileData(userId: string) {
     return user;
   } catch (error) {
     console.error("Error fetching user profile:", error);
+    throw error;
+  }
+}
+
+export async function getUserCreations(userId: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        clerkId: userId,
+      },
+      include: {
+        sports: true,
+        events: true,
+        clubs: true,
+      },
+    });
+    if (!user) {
+      throw new Error("User not found");
+    }
+    return {
+      events: user.events,
+      clubs: user.clubs,
+      sports: user.sports,
+    };
+  } catch (error) {
+    console.log("Error fetching user creations:", error);
     throw error;
   }
 }
