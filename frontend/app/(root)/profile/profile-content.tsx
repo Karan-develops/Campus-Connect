@@ -39,11 +39,14 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import {
   Calendar,
+  Edit,
   Github,
   Linkedin,
+  LogOut,
   Mail,
   MessageCircle,
   Plus,
+  Sparkle,
   Trophy,
   Users,
 } from "lucide-react";
@@ -58,6 +61,7 @@ import {
 } from "@/actions/user.actions";
 import { format } from "date-fns";
 import Link from "next/link";
+import { SignOutButton } from "@clerk/nextjs";
 
 type ProfileWithRelations = User & {
   projects: Project[];
@@ -362,7 +366,22 @@ export default function ProfileContent({
             (isEditing ? (
               <Button onClick={handleSaveProfile}>Save Profile</Button>
             ) : (
-              <Button onClick={handleEditProfile}>Edit Profile</Button>
+              <div className="flex gap-4">
+                <Button onClick={handleEditProfile}>
+                  Edit Profile
+                  <Edit />
+                </Button>
+                <Link href="/my-creations">
+                  <Button>
+                    My Creations
+                    <Sparkle />
+                  </Button>
+                </Link>
+                <Button className="!text-red-600">
+                  <SignOutButton />
+                  <LogOut/>
+                </Button>
+              </div>
             ))}
           {!isOwnProfile && (
             <Button>
@@ -379,6 +398,7 @@ export default function ProfileContent({
           <TabsTrigger value="achievements">Achievements</TabsTrigger>
           <TabsTrigger value="extracurriculars">Extracurriculars</TabsTrigger>
           <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
+          <TabsTrigger value="creations">My Creations</TabsTrigger>
         </TabsList>
 
         <TabsContent value="projects">
