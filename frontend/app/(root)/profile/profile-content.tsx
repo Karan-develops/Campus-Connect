@@ -8,6 +8,9 @@ import type {
   Extracurricular,
   PortfolioItem,
   PrivacySettings,
+  Club,
+  Event,
+  Sport,
 } from "@prisma/client";
 import {
   Card,
@@ -35,12 +38,14 @@ import {
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import {
+  Calendar,
   Github,
   Linkedin,
   Mail,
   MessageCircle,
-  Edit,
   Plus,
+  Trophy,
+  Users,
 } from "lucide-react";
 import {
   updateUserProfile,
@@ -52,6 +57,7 @@ import {
   fetchProfileData,
 } from "@/actions/user.actions";
 import { format } from "date-fns";
+import Link from "next/link";
 
 type ProfileWithRelations = User & {
   projects: Project[];
@@ -59,10 +65,13 @@ type ProfileWithRelations = User & {
   extracurriculars: Extracurricular[];
   portfolioItems: PortfolioItem[];
   privacySettings: PrivacySettings | null;
+  clubs: Club[];
+  sports: Sport[];
+  events: Event[];
 };
 
 interface ProfileContentProps {
-  cId:string;
+  cId: string;
   profile: ProfileWithRelations;
   isOwnProfile: boolean;
 }
@@ -755,6 +764,111 @@ export default function ProfileContent({
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
+            )}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="creations">
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Calendar className="mr-2 h-5 w-5" />
+                  Created Events
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {profile.events.length > 0 ? (
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {profile.events.map((event) => (
+                      <Card key={event.id}>
+                        <CardHeader>
+                          <CardTitle>{event.name}</CardTitle>
+                          <CardDescription>{event.date}</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <p>
+                            <strong>Location:</strong> {event.location}
+                          </p>
+                          <p>{event.description}</p>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <p>No events created yet.</p>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Users className="mr-2 h-5 w-5" />
+                  Created Clubs
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {profile.clubs.length > 0 ? (
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {profile.clubs.map((club) => (
+                      <Card key={club.id}>
+                        <CardHeader>
+                          <CardTitle>{club.name}</CardTitle>
+                          <CardDescription>{club.category}</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <p>{club.description}</p>
+                          <p>
+                            <strong>Contact:</strong> {club.contactEmail}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <p>No clubs created yet.</p>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Trophy className="mr-2 h-5 w-5" />
+                  Created Sports
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {profile.sports.length > 0 ? (
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {profile.sports.map((sport) => (
+                      <Card key={sport.id}>
+                        <CardHeader>
+                          <CardTitle>{sport.name}</CardTitle>
+                          <CardDescription>{sport.type}</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <p>{sport.description}</p>
+                          <p>
+                            <strong>Coach:</strong> {sport.coach}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <p>No sports created yet.</p>
+                )}
+              </CardContent>
+            </Card>
+
+            {isOwnProfile && (
+              <div className="flex justify-center mt-6">
+                <Link href="/campus-life/create">
+                  <Button>Create New Event, Club, or Sport</Button>
+                </Link>
+              </div>
             )}
           </div>
         </TabsContent>
