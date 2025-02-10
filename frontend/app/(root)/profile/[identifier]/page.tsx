@@ -31,6 +31,9 @@ export default async function ProfilePage({
           extracurriculars: true,
           portfolioItems: true,
           privacySettings: true,
+          events: true,
+          sports: true,
+          clubs: true,
         },
       });
     } else {
@@ -42,6 +45,9 @@ export default async function ProfilePage({
           extracurriculars: true,
           portfolioItems: true,
           privacySettings: true,
+          events: true,
+          sports: true,
+          clubs: true,
         },
       });
 
@@ -54,6 +60,9 @@ export default async function ProfilePage({
             extracurriculars: true,
             portfolioItems: true,
             privacySettings: true,
+            events: true,
+            sports: true,
+            clubs: true,
           },
         });
       }
