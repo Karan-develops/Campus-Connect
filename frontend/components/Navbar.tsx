@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/menubar";
 import { SignInButton, UserButton } from "@clerk/nextjs";
 import { Button } from "./ui/button";
+import ModeToggle from "./ToggleTheme";
 
 interface NavbarProps {
   user: {
@@ -182,11 +183,6 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
               </Link>
             )}
           </div>
-          {/* <div className="pt-4 pb-3 border-t border-gray-700">
-            <div className="flex items-center px-5">
-              <UserButton afterSignOutUrl="/" />
-            </div>
-          </div> */}
         </div>
       )}
     </nav>
