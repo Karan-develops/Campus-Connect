@@ -13,90 +13,48 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { Search, MessageCircle, UserPlus, Bookmark } from "lucide-react";
+import { User } from "@prisma/client";
+import { projects, students } from "@/app/constants/peersData.constants";
+import { connectWithUser } from "@/actions/user.actions";
+import Link from "next/link";
 
-// Mock data for students and projects
-const students = [
-  {
-    id: 1,
-    name: "Alice Johnson",
-    major: "Computer Science",
-    year: "Junior",
-    skills: ["React", "Node.js", "Python"],
-    image: "",
-  },
-  {
-    id: 2,
-    name: "Bob Smith",
-    major: "Electrical Engineering",
-    year: "Senior",
-    skills: ["C++", "MATLAB", "Circuit Design"],
-    image: "",
-  },
-  {
-    id: 3,
-    name: "Charlie Brown",
-    major: "Business Administration",
-    year: "Sophomore",
-    skills: ["Marketing", "Data Analysis", "Public Speaking"],
-    image: "",
-  },
-  {
-    id: 4,
-    name: "Diana Lee",
-    major: "Graphic Design",
-    year: "Senior",
-    skills: ["Adobe Creative Suite", "UI/UX Design", "Typography"],
-    image: "",
-  },
-];
+interface PeersContentProps {
+  initialUsers: User[];
+}
 
-const projects = [
-  {
-    id: 1,
-    title: "AI-powered Study Assistant",
-    description:
-      "Developing an AI assistant to help students organize their study schedules and materials.",
-    skills: ["Machine Learning", "Python", "UI Design"],
-    owner: "Alice Johnson",
-  },
-  {
-    id: 2,
-    name: "Sustainable Energy Monitor",
-    description:
-      "Creating a device to monitor and optimize energy usage in college dormitories.",
-    skills: ["IoT", "Data Analysis", "Hardware Design"],
-    owner: "Bob Smith",
-  },
-  {
-    id: 3,
-    name: "Campus Event App",
-    description:
-      "Building a mobile app to help students discover and attend campus events.",
-    skills: ["React Native", "Node.js", "UX Design"],
-    owner: "Charlie Brown",
-  },
-];
-
-export default function PeersContent() {
+export default function PeersContent({ initialUsers }: PeersContentProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [newProject, setNewProject] = useState({
-    title: "",
-    description: "",
-    skills: "",
-  });
+
+  const [users, setUsers] = useState(initialUsers);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+    const filteredUsers = initialUsers.filter(
+      (user) =>
+        user.name.toLowerCase().includes(query) ||
+        user.major?.toLowerCase().includes(query) ||
+        user.year?.toLowerCase().includes(query)
+    );
+    setUsers(filteredUsers);
+  };
+
+  const handleConnect = async (userId: string) => {
+    try {
+      await connectWithUser(userId);
+      // Updating the UI to reflect the new connection
+      setUsers(
+        users.map((user) =>
+          user.id === userId ? { ...user, isConnected: true } : user
+        )
+      );
+    } catch (error) {
+      console.error("Error connecting with user:", error);
+    }
+  };
 
   const filteredStudents = students.filter(
     (student) =>
@@ -117,13 +75,6 @@ export default function PeersContent() {
       )
   );
 
-  const handleNewProject = () => {
-    // Here you would typically send this data to your backend
-    console.log("New project:", newProject);
-    // Reset the form
-    setNewProject({ title: "", description: "", skills: "" });
-  };
-
   return (
     <div className="space-y-12">
       <section>
@@ -131,11 +82,63 @@ export default function PeersContent() {
           <Search className="text-gray-400" />
           <Input
             type="text"
-            placeholder="Search peers or projects..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search peers..."
+            value={searchQuery}
+            onChange={handleSearch}
             className="max-w-sm"
           />
+        </div>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {users.map((user) => (
+            <Card key={user.id}>
+              <CardHeader>
+                <div className="flex items-center space-x-4">
+                  <Avatar>
+                    <AvatarImage
+                      src={user.avatarUrl || undefined}
+                      alt={user.name}
+                    />
+                    <AvatarFallback>
+                      {user.name.slice(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <CardTitle>{user.name}</CardTitle>
+                    <CardDescription>
+                      {user.major}, {user.year}
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">{user.bio}</p>
+                <div className="flex flex-wrap gap-2">
+                  {user.major?.split(",").map((skill: any, index: any) => (
+                    <Badge key={index} variant="secondary">
+                      {skill.trim()}
+                    </Badge>
+                  ))}
+                </div>
+              </CardContent>
+              <CardFooter className="flex justify-between">
+                <Button variant="outline" size="sm" asChild>
+                  <Link href={`/messages/${user.id}`}>
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    Message
+                  </Link>
+                </Button>
+                {/* <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleConnect(user.id)}
+                  disabled={user.isConnected}
+                >
+                  <UserPlus className="mr-2 h-4 w-4" />
+                  {user.isConnected ? "Connected" : "Connect"}
+                </Button> */}
+              </CardFooter>
+            </Card>
+          ))}
         </div>
         <Tabs defaultValue="peers" className="w-full">
           <TabsList className="mb-4">
@@ -224,112 +227,10 @@ export default function PeersContent() {
       </section>
 
       <section>
-        <h2 className="text-2xl font-semibold mb-4">Post a New Project</h2>
-        <Card>
-          <CardHeader>
-            <CardTitle>Share Your Project Idea</CardTitle>
-            <CardDescription>
-              Let others know about your project and find collaborators
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form className="space-y-4">
-              <div>
-                <Label htmlFor="project-title">Project Title</Label>
-                <Input
-                  id="project-title"
-                  value={newProject.title}
-                  onChange={(e) =>
-                    setNewProject({ ...newProject, title: e.target.value })
-                  }
-                  placeholder="Enter your project title"
-                  autoComplete="off"
-                />
-              </div>
-              <div>
-                <Label htmlFor="project-description">Project Description</Label>
-                <Textarea
-                  id="project-description"
-                  value={newProject.description}
-                  onChange={(e) =>
-                    setNewProject({
-                      ...newProject,
-                      description: e.target.value,
-                    })
-                  }
-                  placeholder="Describe your project and what kind of help you're looking for"
-                />
-              </div>
-              <div>
-                <Label htmlFor="project-skills">
-                  Required Skills (comma-separated)
-                </Label>
-                <Input
-                  id="project-skills"
-                  value={newProject.skills}
-                  onChange={(e) =>
-                    setNewProject({ ...newProject, skills: e.target.value })
-                  }
-                  placeholder="e.g. React, Node.js, UI Design"
-                />
-              </div>
-            </form>
-          </CardContent>
-          <CardFooter>
-            <Button onClick={handleNewProject}>Post Project</Button>
-          </CardFooter>
-        </Card>
-      </section>
-
-      <section>
         <h2 className="text-2xl font-semibold mb-4">
           Upcoming Collaboration Events
         </h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <Card>
-            <CardHeader>
-              <CardTitle>Hackathon 2023</CardTitle>
-              <CardDescription>Date: August 15-17, 2023</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>
-                Join us for a 48-hour coding marathon to solve real-world
-                problems and showcase your skills!
-              </p>
-            </CardContent>
-            <CardFooter>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline">Learn More</Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                  <DialogHeader>
-                    <DialogTitle>Hackathon 2023</DialogTitle>
-                    <DialogDescription>
-                      Get ready for an exciting 48-hour coding challenge! Form
-                      teams, tackle interesting problems, and compete for
-                      amazing prizes.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <p>
-                      <strong>Date:</strong> August 15-17, 2023
-                    </p>
-                    <p>
-                      <strong>Location:</strong> Main Campus, Tech Building
-                    </p>
-                    <p>
-                      <strong>Prizes:</strong> Over $10,000 in cash and
-                      sponsored gifts
-                    </p>
-                  </div>
-                  <DialogFooter>
-                    <Button type="submit">Register Now</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </CardFooter>
-          </Card>
           <Card>
             <CardHeader>
               <CardTitle>Project Showcase</CardTitle>
