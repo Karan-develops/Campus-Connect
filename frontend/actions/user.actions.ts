@@ -549,10 +549,20 @@ export async function sendMessage(receiverId: string, content: string) {
     const { userId } = await auth();
     if (!userId) throw new Error("Unauthorized");
 
+    const dbUser = await prisma.user.findUnique({
+      where: {
+        clerkId: userId,
+      },
+    });
+
+    if (!dbUser) {
+      throw new Error("User not found");
+    }
+
     const message = await prisma.message.create({
       data: {
         content,
-        senderId: userId,
+        senderId: dbUser.id,
         receiverId,
       },
     });
@@ -562,4 +572,14 @@ export async function sendMessage(receiverId: string, content: string) {
     console.log("Error sending messages:", error);
     throw error;
   }
+}
+
+export async function getOtherUser(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) throw new Error("User not found");
+
+  return user;
 }
