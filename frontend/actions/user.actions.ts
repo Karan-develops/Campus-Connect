@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { currentUser } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -446,6 +446,120 @@ export async function getUserCreations(userId: string) {
     };
   } catch (error) {
     console.log("Error fetching user creations:", error);
+    throw error;
+  }
+}
+
+export async function getUsers() {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      throw new Error("Unauthorized");
+    }
+
+    const users = await prisma.user.findMany({
+      where: {
+        NOT: {
+          clerkId: userId,
+        },
+      },
+      include: {
+        connections: {
+          where: {
+            connectedId: userId,
+          },
+        },
+      },
+    });
+
+    return users.map((user) => ({
+      ...user,
+      isConnected: user.connections.length > 0,
+    }));
+  } catch (error) {
+    console.log("Error fetching user connections:", error);
+    throw error;
+  }
+}
+
+export async function connectWithUser(connectedId: string) {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      throw new Error("Unauthorized");
+    }
+
+    const connection = await prisma.connection.create({
+      data: {
+        userId,
+        connectedId,
+      },
+    });
+
+    return connection;
+  } catch (error) {
+    console.log("Error connecting with user:", error);
+    throw error;
+  }
+}
+
+export async function getUserConnections(userId: string) {
+  try {
+    const connections = await prisma.connection.count({
+      where: {
+        OR: [{ userId }, { connectedId: userId }],
+      },
+    });
+
+    return connections;
+  } catch (error) {
+    console.log("Error getting user connections:", error);
+    throw error;
+  }
+}
+
+export async function getMessages(otherUserId: string) {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    const messages = await prisma.message.findMany({
+      where: {
+        OR: [
+          { senderId: userId, receiverId: otherUserId },
+          { senderId: otherUserId, receiverId: userId },
+        ],
+      },
+      orderBy: {
+        createdAt: "asc",
+      },
+    });
+
+    return messages;
+  } catch (error) {
+    console.log("Error getting messages:", error);
+    throw error;
+  }
+}
+
+export async function sendMessage(receiverId: string, content: string) {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    const message = await prisma.message.create({
+      data: {
+        content,
+        senderId: userId,
+        receiverId,
+      },
+    });
+
+    return message;
+  } catch (error) {
+    console.log("Error sending messages:", error);
     throw error;
   }
 }
