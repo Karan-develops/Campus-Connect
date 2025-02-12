@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { User } from "@prisma/client";
-import { getMessages, sendMessage } from "@/actions/user.actions";
+import { getMessages, sendMessage } from "@/actions/message.actions";
 import { ChevronRight } from "lucide-react";
 
 interface MessageContentProps {

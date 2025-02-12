@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import MessageContent from "./messages-content";
 import type { Metadata } from "next";
-import { getOtherUser } from "@/actions/user.actions";
+import { getOtherUser } from "@/actions/message.actions";
 import Loader1 from "@/components/Loader1";
 
 export const metadata: Metadata = {
