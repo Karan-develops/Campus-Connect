@@ -3,7 +3,6 @@ import PeersContent from "./peers-content";
 import { getUsers } from "@/actions/user.actions";
 import { Suspense } from "react";
 import Loader1 from "@/components/Loader1";
-import { currentUser } from "@clerk/nextjs/server";
 
 export const metadata: Metadata = {
   title: "Peers | Campus Diary",
@@ -12,7 +11,6 @@ export const metadata: Metadata = {
 };
 
 export default async function PeersPage() {
-  const user = await currentUser();
   const users = await getUsers();
   return (
     <div className="container mx-auto px-4 py-8">

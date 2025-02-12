@@ -1,14 +1,10 @@
-import { currentUser } from "@clerk/nextjs/server";
+"use client";
+
+import { useAuthStore } from "@/lib/store/authStore";
 import Navbar from "./Navbar";
-import { syncUser } from "@/actions/user.actions";
 
-export default async function NavbarWrapper() {
-  let clerkUser = await currentUser();
+export default function NavbarWrapper() {
+  const { user } = useAuthStore();
 
-  if (!clerkUser) {
-    return <Navbar user={null} />;
-  }
-  const dbUser = await syncUser();
-
-  return <Navbar user={dbUser} />;
+  return <Navbar user={user} />;
 }

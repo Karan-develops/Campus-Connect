@@ -12,16 +12,10 @@ import {
 } from "@/components/ui/menubar";
 import { SignInButton } from "@clerk/nextjs";
 import { Button } from "./ui/button";
+import type { User } from "@prisma/client";
 
 interface NavbarProps {
-  user: {
-    id?: string;
-    username?: string | null;
-    firstName?: string | null;
-    lastName?: string | null;
-    imageUrl?: string;
-    email?: string;
-  } | null;
+  user: User | null;
 }
 
 const navItems = [
