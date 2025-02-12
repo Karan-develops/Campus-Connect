@@ -209,14 +209,15 @@ export default function ProfileContent({
         console.error("Error updating privacy settings:", error);
       }
     }
-    useEffect(() => {
-      const fetchConnections = async () => {
-        const count = await getUserConnections(cId);
-        setConnections(count);
-      };
-      fetchConnections();
-    }, [profile.id]);
   };
+
+  useEffect(() => {
+    const fetchConnections = async () => {
+      const count = await getUserConnections(profile.id);
+      setConnections(count);
+    };
+    fetchConnections();
+  }, [profile.id]);
 
   return (
     <div className="space-y-8">

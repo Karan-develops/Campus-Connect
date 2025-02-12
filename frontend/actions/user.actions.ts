@@ -490,22 +490,22 @@ export async function connectWithUser(connectedId: string) {
     if (!userId) {
       throw new Error("Unauthorized");
     }
-    
-    const dbUser = await prisma.user.findUnique({
-      where:{
-        clerkId:userId
-      }
-    })
 
-    const dbId = dbUser?.id
-    
+    const dbUser = await prisma.user.findUnique({
+      where: {
+        clerkId: userId,
+      },
+    });
+
+    const dbId = dbUser?.id;
+
     if (!dbId) {
       throw new Error("Unauthorized");
     }
 
     const connection = await prisma.connection.create({
       data: {
-        userId:dbId,
+        userId: dbId,
         connectedId,
       },
     });
@@ -521,7 +521,7 @@ export async function getUserConnections(userId: string) {
   try {
     const connections = await prisma.connection.count({
       where: {
-        OR: [{ userId }, { connectedId: userId }],
+        OR: [{ userId: userId }, { connectedId: userId }],
       },
     });
 
