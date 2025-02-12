@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Card,
   CardContent,
@@ -19,11 +19,10 @@ interface MessageContentProps {
   otherUser: User;
 }
 
-export default function MessageContent({
-  otherUser
-}: MessageContentProps) {
+export default function MessageContent({ otherUser }: MessageContentProps) {
   const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -33,13 +32,17 @@ export default function MessageContent({
     fetchMessages();
   }, [otherUser.id]);
 
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+    });
+  }, [messages]);
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newMessage.trim()) {
-      const sentMessage = await sendMessage(
-        otherUser.id,
-        newMessage
-      );
+      const sentMessage = await sendMessage(otherUser.id, newMessage);
       setMessages([...messages, sentMessage]);
       setNewMessage("");
     }
@@ -61,7 +64,7 @@ export default function MessageContent({
           <span>{otherUser.name}</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="h-[400px] overflow-y-auto">
+      <CardContent className="h-[400px] overflow-y-auto no-scrollbar">
         {messages.map((message) => (
           <div
             key={message.id}
@@ -80,6 +83,7 @@ export default function MessageContent({
             </div>
           </div>
         ))}
+        <div ref={messagesEndRef} />
       </CardContent>
       <CardFooter>
         <form onSubmit={handleSendMessage} className="flex w-full space-x-2">

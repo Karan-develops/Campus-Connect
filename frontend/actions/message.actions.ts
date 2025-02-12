@@ -1,18 +1,25 @@
-"use server"
+"use server";
 
 import prisma from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
+import { getUserByClerkId } from "./user.actions";
 
 export async function getMessages(otherUserId: string) {
   try {
     const { userId } = await auth();
     if (!userId) throw new Error("Unauthorized");
 
+    const dbUser = await getUserByClerkId(userId);
+
+    if (!dbUser) {
+      throw new Error("User not found!");
+    }
+
     const messages = await prisma.message.findMany({
       where: {
         OR: [
-          { senderId: userId, receiverId: otherUserId },
-          { senderId: otherUserId, receiverId: userId },
+          { senderId: dbUser.id, receiverId: otherUserId },
+          { senderId: otherUserId, receiverId: dbUser.id },
         ],
       },
       orderBy: {
