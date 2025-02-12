@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type {
   User,
   Project,
@@ -58,6 +58,7 @@ import {
   addExtracurricular,
   addPortfolioItem,
   fetchProfileData,
+  getUserConnections,
 } from "@/actions/user.actions";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -109,6 +110,7 @@ export default function ProfileContent({
     description: "",
     url: "",
   });
+  const [connections, setConnections] = useState(0);
 
   const handleEditProfile = () => {
     setIsEditing(true);
@@ -207,6 +209,13 @@ export default function ProfileContent({
         console.error("Error updating privacy settings:", error);
       }
     }
+    useEffect(() => {
+      const fetchConnections = async () => {
+        const count = await getUserConnections(cId);
+        setConnections(count);
+      };
+      fetchConnections();
+    }, [profile.id]);
   };
 
   return (
@@ -232,6 +241,7 @@ export default function ProfileContent({
               <CardDescription>
                 {profile.major}, {profile.year}
               </CardDescription>
+              <CardDescription>{connections} connections</CardDescription>
             </div>
           </div>
         </CardHeader>
@@ -379,7 +389,7 @@ export default function ProfileContent({
                 </Link>
                 <Button className="!text-red-600">
                   <SignOutButton />
-                  <LogOut/>
+                  <LogOut />
                 </Button>
               </div>
             ))}

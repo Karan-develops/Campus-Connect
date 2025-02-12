@@ -10,9 +10,8 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-import { SignInButton, UserButton } from "@clerk/nextjs";
+import { SignInButton } from "@clerk/nextjs";
 import { Button } from "./ui/button";
-import ModeToggle from "./ToggleTheme";
 
 interface NavbarProps {
   user: {

@@ -490,10 +490,22 @@ export async function connectWithUser(connectedId: string) {
     if (!userId) {
       throw new Error("Unauthorized");
     }
+    
+    const dbUser = await prisma.user.findUnique({
+      where:{
+        clerkId:userId
+      }
+    })
+
+    const dbId = dbUser?.id
+    
+    if (!dbId) {
+      throw new Error("Unauthorized");
+    }
 
     const connection = await prisma.connection.create({
       data: {
-        userId,
+        userId:dbId,
         connectedId,
       },
     });
