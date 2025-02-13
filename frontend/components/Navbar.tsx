@@ -16,6 +16,7 @@ import type { User } from "@prisma/client";
 
 interface NavbarProps {
   user: User | null;
+  isLoading: boolean;
 }
 
 const navItems = [
@@ -37,7 +38,7 @@ const navItems = [
   },
 ];
 
-const Navbar: React.FC<NavbarProps> = ({ user }) => {
+const Navbar: React.FC<NavbarProps> = ({ user, isLoading }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
@@ -95,7 +96,11 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
                   )}
                 </div>
               ))}
-              {user ? (
+              {isLoading ? (
+                <Button className="flex items-center gap-2" asChild>
+                  <span className="hidden lg:inline">Loading...</span>
+                </Button>
+              ) : user ? (
                 <>
                   <Button className="flex items-center gap-2" asChild>
                     <Link href={getProfileLink()}>

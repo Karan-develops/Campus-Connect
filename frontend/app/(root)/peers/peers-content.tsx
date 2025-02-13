@@ -17,17 +17,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Search, MessageCircle, UserPlus, Bookmark } from "lucide-react";
 import { User } from "@prisma/client";
 import { projects, students } from "@/app/constants/peersData.constants";
-import { connectWithUser } from "@/actions/user.actions";
 import Link from "next/link";
+import { connectWithUser } from "@/actions/peers.actions";
+
+interface ExtendedUser extends User {
+  isConnected: boolean;
+}
 
 interface PeersContentProps {
-  initialUsers: User[];
+  initialUsers: ExtendedUser[];
 }
 
 export default function PeersContent({ initialUsers }: PeersContentProps) {
+  const [users, setUsers] = useState<ExtendedUser[]>(initialUsers);
   const [searchTerm, setSearchTerm] = useState("");
-
-  const [users, setUsers] = useState(initialUsers);
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,7 +130,7 @@ export default function PeersContent({ initialUsers }: PeersContentProps) {
                     Message
                   </Link>
                 </Button>
-                {/* <Button
+                <Button
                   variant="outline"
                   size="sm"
                   onClick={() => handleConnect(user.id)}
@@ -135,7 +138,7 @@ export default function PeersContent({ initialUsers }: PeersContentProps) {
                 >
                   <UserPlus className="mr-2 h-4 w-4" />
                   {user.isConnected ? "Connected" : "Connect"}
-                </Button> */}
+                </Button>
               </CardFooter>
             </Card>
           ))}

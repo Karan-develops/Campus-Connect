@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import PeersContent from "./peers-content";
-import { getUsers } from "@/actions/user.actions";
 import { Suspense } from "react";
 import Loader1 from "@/components/Loader1";
+import { getUsers } from "@/actions/peers.actions";
 
 export const metadata: Metadata = {
   title: "Peers | Campus Diary",

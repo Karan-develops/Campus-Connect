@@ -80,35 +80,6 @@ export async function syncUser() {
   }
 }
 
-export async function getProfileByUsername(username: string) {
-  try {
-    const profile = await prisma.user.findUnique({
-      where: {
-        username: username,
-      },
-      include: {
-        projects: true,
-        achievements: true,
-        extracurriculars: true,
-        portfolioItems: true,
-        privacySettings: true,
-        clubs: true,
-        sports: true,
-        events: true,
-      },
-    });
-
-    if (!profile) {
-      throw new Error("User not found");
-    }
-
-    return profile;
-  } catch (error) {
-    console.error("Error fetching profile by username:", error);
-    throw error;
-  }
-}
-
 export async function updateUserProfile(
   userId: string,
   data: {
@@ -199,59 +170,6 @@ export async function updatePrivacySettings(
     return updatedSettings;
   } catch (error) {
     console.error("Error updating privacy settings", error);
-    throw error;
-  }
-}
-
-export async function getUserById(userId: string) {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { clerkId: userId },
-      include: {
-        projects: true,
-        achievements: true,
-        extracurriculars: true,
-        portfolioItems: true,
-        privacySettings: true,
-        events: true,
-        sports: true,
-        clubs: true,
-      },
-    });
-
-    if (!user) {
-      return null;
-    }
-
-    return user;
-  } catch (error) {
-    console.error("Error fetching user by ID:", error);
-    throw error;
-  }
-}
-
-export async function getUserByClerkId(clerkId: string) {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { clerkId },
-      include: {
-        projects: true,
-        achievements: true,
-        extracurriculars: true,
-        portfolioItems: true,
-        privacySettings: true,
-        clubs: true,
-        sports: true,
-        events: true,
-      },
-    });
-
-    if (!user) {
-      return null;
-    }
-    return user;
-  } catch (error) {
-    console.error("Error fetching user by Clerk ID:", error);
     throw error;
   }
 }
@@ -450,78 +368,11 @@ export async function getUserCreations(userId: string) {
   }
 }
 
-export async function getUsers() {
-  try {
-    const { userId } = await auth();
-
-    if (!userId) {
-      throw new Error("Unauthorized");
-    }
-
-    const users = await prisma.user.findMany({
-      where: {
-        NOT: {
-          clerkId: userId,
-        },
-      },
-      include: {
-        connections: {
-          where: {
-            connectedId: userId,
-          },
-        },
-      },
-    });
-
-    return users.map((user) => ({
-      ...user,
-      isConnected: user.connections.length > 0,
-    }));
-  } catch (error) {
-    console.log("Error fetching user connections:", error);
-    throw error;
-  }
-}
-
-export async function connectWithUser(connectedId: string) {
-  try {
-    const { userId } = await auth();
-
-    if (!userId) {
-      throw new Error("Unauthorized");
-    }
-
-    const dbUser = await prisma.user.findUnique({
-      where: {
-        clerkId: userId,
-      },
-    });
-
-    const dbId = dbUser?.id;
-
-    if (!dbId) {
-      throw new Error("Unauthorized");
-    }
-
-    const connection = await prisma.connection.create({
-      data: {
-        userId: dbId,
-        connectedId,
-      },
-    });
-
-    return connection;
-  } catch (error) {
-    console.log("Error connecting with user:", error);
-    throw error;
-  }
-}
-
-export async function getUserConnections(userId: string) {
+export async function getUserConnectionsCount(userId: string) {
   try {
     const connections = await prisma.connection.count({
       where: {
-        OR: [{ userId: userId }, { connectedId: userId }],
+        userId,
       },
     });
 
@@ -531,28 +382,3 @@ export async function getUserConnections(userId: string) {
     throw error;
   }
 }
-
-export const getConnectedUsers = async (userId: string) => {
-  try {
-    if (!userId) return new Set<string>();
-
-    const connections = await prisma.connection.findMany({
-      where: {
-        OR: [{ userId }, { connectedId: userId }],
-      },
-      select: {
-        userId: true,
-        connectedId: true,
-      },
-    });
-
-    return new Set(
-      connections.flatMap(({ userId: u1, connectedId: u2 }) =>
-        u1 === userId ? [u2] : [u1]
-      )
-    );
-  } catch (error) {
-    console.log("Error Fetching Connections:", error);
-    throw error;
-  }
-};

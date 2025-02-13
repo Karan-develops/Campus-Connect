@@ -2,14 +2,17 @@
 
 import prisma from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-import { getUserByClerkId } from "./user.actions";
 
 export async function getMessages(otherUserId: string) {
   try {
     const { userId } = await auth();
     if (!userId) throw new Error("Unauthorized");
 
-    const dbUser = await getUserByClerkId(userId);
+    const dbUser = await prisma.user.findUnique({
+      where: {
+        clerkId: userId,
+      },
+    });
 
     if (!dbUser) {
       throw new Error("User not found!");

@@ -58,7 +58,7 @@ import {
   addExtracurricular,
   addPortfolioItem,
   fetchProfileData,
-  getUserConnections,
+  getUserConnectionsCount,
 } from "@/actions/user.actions";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -213,7 +213,7 @@ export default function ProfileContent({
 
   useEffect(() => {
     const fetchConnections = async () => {
-      const count = await getUserConnections(profile.id);
+      const count = await getUserConnectionsCount(profile.id);
       setConnections(count);
     };
     fetchConnections();
