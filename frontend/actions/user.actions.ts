@@ -531,3 +531,28 @@ export async function getUserConnections(userId: string) {
     throw error;
   }
 }
+
+export const getConnectedUsers = async (userId: string) => {
+  try {
+    if (!userId) return new Set<string>();
+
+    const connections = await prisma.connection.findMany({
+      where: {
+        OR: [{ userId }, { connectedId: userId }],
+      },
+      select: {
+        userId: true,
+        connectedId: true,
+      },
+    });
+
+    return new Set(
+      connections.flatMap(({ userId: u1, connectedId: u2 }) =>
+        u1 === userId ? [u2] : [u1]
+      )
+    );
+  } catch (error) {
+    console.log("Error Fetching Connections:", error);
+    throw error;
+  }
+};
