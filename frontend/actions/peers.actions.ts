@@ -31,14 +31,11 @@ export async function getUsers() {
       throw new Error("User not Found");
     }
 
-    console.log("Fetched Users:", users);
-
     return users.map((user) => {
       const isConnected =
         user.connections.some((conn) => conn.connectedId === dbUser.id) ||
         user.connectedBy.some((conn) => conn.userId === dbUser.id);
 
-      console.log(`User: ${user.name}, isConnected: ${isConnected}`);
       return { ...user, isConnected };
     });
   } catch (error) {
@@ -85,7 +82,7 @@ export async function connectWithUser(connectedId: string) {
     const connection = await prisma.connection.createMany({
       data: [
         { userId: dbId, connectedId: connectedId },
-        { userId: connectedId, connectedId: dbId }, // Reverse entry
+        { userId: connectedId, connectedId: dbId },
       ],
     });
 
