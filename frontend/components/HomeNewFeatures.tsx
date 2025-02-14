@@ -13,6 +13,7 @@ import {
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import Link from "next/link";
+import { SelectSeparator } from "./ui/select";
 
 const HomeNewFeatures = () => {
   return (
@@ -84,6 +85,7 @@ const HomeNewFeatures = () => {
           </Button>
         </motion.div>
       </section>
+      <SelectSeparator/>
     </div>
   );
 };
