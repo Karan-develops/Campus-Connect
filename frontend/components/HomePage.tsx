@@ -8,10 +8,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { BookOpen, Users, Trophy, Globe } from "lucide-react";
+import HeroGeometric from "./NewHero";
 
 export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen">
+      <HeroGeometric />
       <HeroSection />
       <FeaturesSection />
       <HighlightsSection />

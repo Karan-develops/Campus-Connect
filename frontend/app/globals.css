@@ -75,6 +75,15 @@
   }
 }
 
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+}
+
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
     scrollbar-width: none;

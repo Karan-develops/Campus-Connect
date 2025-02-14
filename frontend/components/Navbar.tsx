@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, ChevronDown, UserIcon } from "lucide-react";
+import { Menu, X, ChevronDown, UserIcon, GraduationCap } from "lucide-react";
 import {
   Menubar,
   MenubarContent,
@@ -50,12 +50,15 @@ const Navbar: React.FC<NavbarProps> = ({ user, isLoading }) => {
   };
 
   return (
-    <nav className="bg-gray-900 text-white">
+    <nav className="bg-black text-white border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-1">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0">
-              <span className="text-xl font-bold">Campus Diary</span>
+              <span className="flex gap-1 text-xl font-bold">
+                Campus Diary
+                <GraduationCap />
+              </span>
             </Link>
           </div>
           <div className="hidden md:block">
