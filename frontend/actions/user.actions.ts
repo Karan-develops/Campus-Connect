@@ -382,3 +382,38 @@ export async function getUserConnectionsCount(userId: string) {
     throw error;
   }
 }
+
+export async function getUserConnectionsDetails(userId: string) {
+  try {
+    const connections = await prisma.connection.findMany({
+      where: {
+        OR: [{ userId }],
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            username: true,
+            avatarUrl: true,
+          },
+        },
+        connected: {
+          select: {
+            id: true,
+            name: true,
+            username: true,
+            avatarUrl: true,
+          },
+        },
+      },
+    });
+
+    return connections.map((connection) =>
+      connection.userId === userId ? connection.connected : connection.user
+    );
+  } catch (error) {
+    console.log("Error fetching user connection details:", error);
+    throw error;
+  }
+}

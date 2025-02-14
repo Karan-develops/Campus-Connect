@@ -59,6 +59,7 @@ import {
   addPortfolioItem,
   fetchProfileData,
   getUserConnectionsCount,
+  getUserConnectionsDetails,
 } from "@/actions/user.actions";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -111,10 +112,30 @@ export default function ProfileContent({
     url: "",
   });
   const [connections, setConnections] = useState(0);
+  const [connectionsList, setConnectionsList] = useState<any>([])
+  const [isConnectionsDialogOpen, setIsConnectionsDialogOpen] = useState(false)
 
   const handleEditProfile = () => {
     setIsEditing(true);
   };
+
+  const handleShowConnections = async()=>{
+    try {
+      const connectionDetails = await getUserConnectionsDetails(profile.id);
+      const formattedDetails = connectionDetails.map((detail) => ({
+        ...detail,
+        id: detail.id || "",
+        email: detail.name || "",
+        bio: detail.username || "",
+        githubUrl: detail.avatarUrl || "",
+      }));
+    setConnectionsList(formattedDetails)
+    setIsConnectionsDialogOpen(true);
+    } catch (error) {
+      console.log("Error fetching your connections");
+      throw error;
+    }
+  }
 
   const handleSaveProfile = async () => {
     try {
@@ -242,10 +263,45 @@ export default function ProfileContent({
               <CardDescription>
                 {profile.major}, {profile.year}
               </CardDescription>
-              <CardDescription>{connections} connections</CardDescription>
+              <Button variant="link" className="p-0" onClick={handleShowConnections}>
+                <Users className="w-4 h-4 mr-2" />
+                {connections} connections
+              </Button>
             </div>
           </div>
         </CardHeader>
+        <Dialog open={isConnectionsDialogOpen} onOpenChange={setIsConnectionsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Connections</DialogTitle>
+            <DialogDescription>People connected with {profile.name}</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            {connectionsList.map((connection:any) => (
+              <div key={connection.id} className="flex items-center space-x-4">
+                <Avatar>
+                  <AvatarImage src={connection.avatarUrl || undefined} alt={connection.name} />
+                  <AvatarFallback>
+                    {connection.name
+                      .split(" ")
+                      .map((n:any) => n[0])
+                      .join("")}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-grow">
+                  <p className="font-semibold">{connection.name}</p>
+                  <p className="text-sm text-gray-500">
+                    {connection.major}, {connection.year}
+                  </p>
+                </div>
+                <Button asChild variant="outline" size="sm">
+                  <Link href={`/profile/${connection.username}`}>View Profile</Link>
+                </Button>
+              </div>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
         <CardContent>
           {isEditing ? (
             <div className="space-y-4">
@@ -397,7 +453,8 @@ export default function ProfileContent({
           {!isOwnProfile && (
             <Button>
               <MessageCircle className="mr-2 h-4 w-4" />
-              Message
+              <Link href={`/peers`}>Message
+              </Link>
             </Button>
           )}
         </CardFooter>
