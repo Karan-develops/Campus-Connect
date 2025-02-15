@@ -10,7 +10,6 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-import { SignInButton } from "@clerk/nextjs";
 import { Button } from "./ui/button";
 import type { User } from "@prisma/client";
 
@@ -111,12 +110,11 @@ const Navbar: React.FC<NavbarProps> = ({ user, isLoading }) => {
                       <span className="hidden lg:inline">Profile</span>
                     </Link>
                   </Button>
-                  {/* <UserButton afterSignOutUrl="/" /> */}
                 </>
               ) : (
-                <SignInButton mode="modal">
-                  <Button variant="default">Sign In</Button>
-                </SignInButton>
+                <Button variant="default">
+                  <Link href={"/sign-in"}>Sign In</Link>
+                </Button>
               )}
             </div>
           </div>

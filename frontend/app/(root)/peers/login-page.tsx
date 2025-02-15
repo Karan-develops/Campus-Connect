@@ -5,8 +5,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { SignInButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function LoginPage() {
   return (
@@ -25,9 +25,9 @@ export default function LoginPage() {
             Please sign in to access the Peers page and connect with other
             students.
           </p>
-          <SignInButton mode="modal">
-            <Button size="lg">Sign In</Button>
-          </SignInButton>
+          <Button variant="default" className="size-fit">
+            <Link href={"/sign-in"}>Sign In</Link>
+          </Button>
         </CardContent>
       </Card>
     </div>
