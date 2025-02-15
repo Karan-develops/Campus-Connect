@@ -7,6 +7,6 @@ export const metadata: Metadata = {
     "Discover a world-class education at Campus Diary. Explore our programs, campus life, and opportunities for personal and professional growth.",
 };
 
-export default async function Home () {
+export default async function Home() {
   return <HomePage />;
 }

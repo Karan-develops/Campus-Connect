@@ -3,8 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { ClerkProvider } from "@clerk/nextjs";
-import NavbarWrapper from "@/components/NavbarWrapper";
-import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/components/AuthProvider";
 
@@ -41,9 +39,7 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              <NavbarWrapper />
               {children}
-              <Footer />
             </ThemeProvider>
             <Toaster />
           </body>
