@@ -90,6 +90,9 @@ export default function PeersContent({ initialUsers }: PeersContentProps) {
             onChange={handleSearch}
             className="max-w-sm"
           />
+          <Button>
+            <Link href={"/peers/skill-exchange"}>Skill-Exchange</Link>
+          </Button>
         </div>
         <Tabs defaultValue="peers" className="w-full">
           <TabsList className="mb-4">

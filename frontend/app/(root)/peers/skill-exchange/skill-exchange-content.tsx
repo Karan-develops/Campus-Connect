@@ -48,6 +48,7 @@ export default function SkillExchangeContent() {
   const [searchQuery, setSearchQuery] = useState("");
   const [listings, setListings] = useState<SkillExchangeListing[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -106,6 +107,7 @@ export default function SkillExchangeContent() {
         title: "Success",
         description: "Your listing has been created successfully.",
       });
+      setIsDialogOpen(false);
     } catch (error) {
       console.error("Error creating listing:", error);
       toast({
@@ -146,9 +148,11 @@ export default function SkillExchangeContent() {
 
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-semibold">Skill Exchange Listings</h2>
-        <Dialog>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button>Create Listing</Button>
+            <Button onClick={() => setIsDialogOpen(true)}>
+              Create Listing
+            </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>

@@ -60,6 +60,14 @@ export async function POST(req: Request) {
         description,
         userId: dbId,
       },
+      include: {
+        user: {
+          select: {
+            name: true,
+            avatarUrl: true,
+          },
+        },
+      },
     });
 
     return NextResponse.json(listing);
