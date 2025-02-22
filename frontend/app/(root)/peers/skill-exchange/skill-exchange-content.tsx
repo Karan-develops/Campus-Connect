@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -28,41 +28,92 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, MessageCircle, ThumbsUp, Share2 } from "lucide-react";
-import { mockListings } from "@/app/constants/skill.constants";
+import { useToast } from "@/hooks/use-toast";
+
+interface SkillExchangeListing {
+  id: string;
+  offeredSkill: string;
+  desiredSkill: string;
+  description: string;
+  user: {
+    name: string | null;
+    avatarUrl: string | null;
+  };
+  likes: number;
+  comments: number;
+  createdAt: string;
+}
 
 export default function SkillExchangeContent() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [listings, setListings] = useState(mockListings);
+  const [listings, setListings] = useState<SkillExchangeListing[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    fetchListings();
+  }, []);
+
+  const fetchListings = async (query = "") => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `/api/skill-exchange${query ? `?query=${query}` : ""}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch listings");
+      }
+      const data = await response.json();
+      setListings(data);
+    } catch (error) {
+      console.error("Error fetching listings:", error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch listings. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    const filteredListings = mockListings.filter(
-      (listing) =>
-        listing.offeredSkill
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
-        listing.desiredSkill.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setListings(filteredListings);
+    fetchListings(searchQuery);
   };
 
-  const handleCreateListing = (data: any) => {
-    // Backend pe bhejna Hai
-    console.log("New listing data:", data);
-    // Demo Listings
-    setListings([
-      {
-        id: listings.length + 1,
-        ...data,
-        user: {
-          name: "Current User",
-          avatar: "",
+  const handleCreateListing = async (data: {
+    offeredSkill: string;
+    desiredSkill: string;
+    description: string;
+  }) => {
+    try {
+      const response = await fetch("/api/skill-exchange", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        likes: 0,
-        comments: 0,
-      },
-      ...listings,
-    ]);
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create listing");
+      }
+
+      const newListing = await response.json();
+      setListings([newListing, ...listings]);
+      toast({
+        title: "Success",
+        description: "Your listing has been created successfully.",
+      });
+    } catch (error) {
+      console.error("Error creating listing:", error);
+      toast({
+        title: "Error",
+        description: "Failed to create listing. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -110,7 +161,11 @@ export default function SkillExchangeContent() {
               onSubmit={(e) => {
                 e.preventDefault();
                 const formData = new FormData(e.currentTarget);
-                handleCreateListing(Object.fromEntries(formData));
+                handleCreateListing({
+                  offeredSkill: formData.get("offeredSkill") as string,
+                  desiredSkill: formData.get("desiredSkill") as string,
+                  description: formData.get("description") as string,
+                });
               }}
             >
               <div className="grid gap-4 py-4">
@@ -164,56 +219,67 @@ export default function SkillExchangeContent() {
         </TabsList>
         <TabsContent value="all">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {listings.map((listing) => (
-              <Card key={listing.id} className="flex flex-col">
-                <CardHeader>
-                  <div className="flex items-center space-x-4">
-                    <Avatar>
-                      <AvatarImage
-                        src={listing.user.avatar}
-                        alt={listing.user.name}
-                      />
-                      <AvatarFallback>
-                        {listing.user.name.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <CardTitle className="text-lg">
-                        {listing.user.name}
-                      </CardTitle>
-                      <CardDescription>
-                        {new Date().toLocaleDateString()}
-                      </CardDescription>
+            {isLoading ? (
+              <p>Loading listings...</p>
+            ) : listings.length === 0 ? (
+              <p>No listings found.</p>
+            ) : (
+              listings.map((listing) => (
+                <Card key={listing.id} className="flex flex-col">
+                  <CardHeader>
+                    <div className="flex items-center space-x-4">
+                      <Avatar>
+                        {/* FIXME: */}
+                        {/* <AvatarImage
+                          src={listing.user.avatarUrl || undefined}
+                          alt={listing.user.name || ""}
+                        /> */}
+                        <AvatarFallback>
+                          {listing.user.name
+                            ? listing.user.name.charAt(0)
+                            : "U"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <CardTitle className="text-lg">
+                          {listing.user.name}
+                        </CardTitle>
+                        <CardDescription>
+                          {new Date(listing.createdAt).toLocaleDateString()}
+                        </CardDescription>
+                      </div>
                     </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <div className="flex justify-between mb-4">
-                    <Badge variant="secondary">
-                      Offering: {listing.offeredSkill}
-                    </Badge>
-                    <Badge variant="outline">
-                      Seeking: {listing.desiredSkill}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-gray-300">{listing.description}</p>
-                </CardContent>
-                <CardFooter className="flex justify-between">
-                  <Button variant="ghost" size="sm">
-                    <ThumbsUp className="mr-2 h-4 w-4" />
-                    {listing.likes}
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    <MessageCircle className="mr-2 h-4 w-4" />
-                    {listing.comments}
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    <Share2 className="mr-2 h-4 w-4" />
-                    Share
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
+                  </CardHeader>
+                  <CardContent className="flex-grow">
+                    <div className="flex justify-between mb-4">
+                      <Badge variant="secondary">
+                        Offering: {listing.offeredSkill}
+                      </Badge>
+                      <Badge variant="outline">
+                        Seeking: {listing.desiredSkill}
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-gray-300">
+                      {listing.description}
+                    </p>
+                  </CardContent>
+                  <CardFooter className="flex justify-between">
+                    <Button variant="ghost" size="sm">
+                      <ThumbsUp className="mr-2 h-4 w-4" />
+                      {listing.likes}
+                    </Button>
+                    <Button variant="ghost" size="sm">
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      {listing.comments}
+                    </Button>
+                    <Button variant="ghost" size="sm">
+                      <Share2 className="mr-2 h-4 w-4" />
+                      Share
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))
+            )}
           </div>
         </TabsContent>
         <TabsContent value="offering">

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
+import { getDbIdByClerkID } from "@/actions/extraUser.actions";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -43,6 +44,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const dbId = await getDbIdByClerkID(userId);
+
+  if (!dbId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const { offeredSkill, desiredSkill, description } = await req.json();
 
@@ -51,7 +58,7 @@ export async function POST(req: Request) {
         offeredSkill,
         desiredSkill,
         description,
-        userId,
+        userId: dbId,
       },
     });
 

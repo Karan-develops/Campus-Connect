@@ -83,3 +83,23 @@ export async function getUserByClerkId(clerkId: string) {
     throw error;
   }
 }
+
+export async function getDbIdByClerkID(clerkId: string) {
+  try {
+    const dbId = await prisma.user.findUnique({
+      where: {
+        clerkId,
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (!dbId) {
+      throw new Error("User not Found!");
+    }
+    return dbId.id;
+  } catch (error) {
+    console.error("Error fetching DB-ID by Clerk ID:", error);
+    throw error;
+  }
+}
