@@ -25,6 +25,7 @@ model User {
   avatarUrl        String?
   githubUrl        String?
   linkedinUrl      String?
+  skillExchanges   SkillExchange[]
   projects         Project[]
   achievements     Achievement[]
   extracurriculars Extracurricular[]
@@ -39,6 +40,7 @@ model User {
   receivedMessages Message[]         @relation("ReceivedMessages")
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
+  password         String            @default("defaultpassword")
 }
 
 model Project {
@@ -156,4 +158,17 @@ model Connection {
   createdAt   DateTime @default(now())
 
   @@unique([userId, connectedId])
+}
+
+model SkillExchange {
+  id           String   @id @default(cuid())
+  offeredSkill String
+  desiredSkill String
+  description  String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  likes        Int      @default(0)
+  comments     Int      @default(0)
 }
