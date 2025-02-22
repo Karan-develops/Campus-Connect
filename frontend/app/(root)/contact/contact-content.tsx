@@ -22,7 +22,7 @@ import {
 } from "@/app/constants/contact.constants";
 import { useToast } from "@/hooks/use-toast";
 
-export default function ContactContent() {
+export default function ContactContent({ userId }: { userId: string | null }) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -90,7 +90,7 @@ export default function ContactContent() {
                 <div>
                   <label
                     htmlFor="name"
-                    className="block text-sm font-medium text-gray-700"
+                    className="block text-sm font-medium text-gray-300"
                   >
                     Name
                   </label>
@@ -106,7 +106,7 @@ export default function ContactContent() {
                 <div>
                   <label
                     htmlFor="email"
-                    className="block text-sm font-medium text-gray-700"
+                    className="block text-sm font-medium text-gray-300"
                   >
                     Email
                   </label>
@@ -124,7 +124,7 @@ export default function ContactContent() {
               <div>
                 <label
                   htmlFor="subject"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-300"
                 >
                   Subject
                 </label>
@@ -140,7 +140,7 @@ export default function ContactContent() {
               <div>
                 <label
                   htmlFor="message"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-300"
                 >
                   Message
                 </label>
@@ -153,7 +153,13 @@ export default function ContactContent() {
                   required
                 />
               </div>
-              <Button type="submit">Send Message</Button>
+              {userId ? (
+                <Button type="submit">Send Message</Button>
+              ) : (
+                <Button asChild>
+                  <a href="/sign-in">Login to Send Message</a>
+                </Button>
+              )}
             </form>
           </CardContent>
         </Card>

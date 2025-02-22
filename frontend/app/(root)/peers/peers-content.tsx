@@ -91,8 +91,14 @@ export default function PeersContent({ initialUsers }: PeersContentProps) {
             className="max-w-sm"
           />
         </div>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {users.map((user) => (
+        <Tabs defaultValue="peers" className="w-full">
+          <TabsList className="mb-4">
+            <TabsTrigger value="peers">Peers</TabsTrigger>
+            <TabsTrigger value="projects">Projects</TabsTrigger>
+          </TabsList>
+          <TabsContent value="peers">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {users.map((user) => (
             <Card key={user.id}>
               <CardHeader>
                 <div className="flex items-center space-x-4">
@@ -142,56 +148,6 @@ export default function PeersContent({ initialUsers }: PeersContentProps) {
               </CardFooter>
             </Card>
           ))}
-        </div>
-        <Tabs defaultValue="peers" className="w-full">
-          <TabsList className="mb-4">
-            <TabsTrigger value="peers">Peers</TabsTrigger>
-            <TabsTrigger value="projects">Projects</TabsTrigger>
-          </TabsList>
-          <TabsContent value="peers">
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {filteredStudents.map((student) => (
-                <Card key={student.id}>
-                  <CardHeader>
-                    <div className="flex items-center space-x-4">
-                      <Avatar>
-                        <AvatarImage src={student.image} alt={student.name} />
-                        <AvatarFallback>
-                          {student.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <CardTitle>{student.name}</CardTitle>
-                        <CardDescription>
-                          {student.major}, {student.year}
-                        </CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {student.skills.map((skill, index) => (
-                        <Badge key={index} variant="secondary">
-                          {skill}
-                        </Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex justify-between">
-                    <Button variant="outline" size="sm">
-                      <MessageCircle className="mr-2 h-4 w-4" />
-                      Message
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      <UserPlus className="mr-2 h-4 w-4" />
-                      Connect
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
             </div>
           </TabsContent>
           <TabsContent value="projects">
