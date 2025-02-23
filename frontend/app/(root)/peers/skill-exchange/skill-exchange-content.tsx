@@ -29,7 +29,6 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, MessageCircle, ThumbsUp, Share2, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useAuthStore } from "@/lib/store/authStore";
 
 interface SkillExchangeListing {
   id: string;
@@ -170,7 +169,17 @@ export default function SkillExchangeContent() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to like listing");
+        const errorData = await response.json();
+        if (response.status === 400 && errorData.error === "Already liked") {
+          toast({
+            title: "Already Liked",
+            description: "You have already liked this listing.",
+            variant: "destructive",
+          });
+        } else {
+          throw new Error(errorData.error || "Failed to like listing");
+        }
+        return;
       }
 
       const updatedListing = await response.json();
@@ -185,7 +194,10 @@ export default function SkillExchangeContent() {
       console.error("Error liking listing:", error);
       toast({
         title: "Error",
-        description: "Failed to like listing. Please try again.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to like listing. Please try again.",
         variant: "destructive",
       });
     }

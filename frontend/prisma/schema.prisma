@@ -171,6 +171,7 @@ model SkillExchange {
   userId       String
   user         User      @relation(fields: [userId], references: [id])
   likes        Int       @default(0)
+  likedBy      String[]
   comments     Comment[]
   commentCount Int       @default(0)
 }
