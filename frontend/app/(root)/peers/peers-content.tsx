@@ -90,6 +90,7 @@ export default function PeersContent({ initialUsers }: PeersContentProps) {
             onChange={handleSearch}
             className="max-w-sm"
           />
+          <hr className="w-full" />
           <Button>
             <Link href={"/peers/skill-exchange"}>Skill-Exchange</Link>
           </Button>

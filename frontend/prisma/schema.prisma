@@ -41,6 +41,7 @@ model User {
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
   password         String            @default("defaultpassword")
+  comments         Comment[]
 }
 
 model Project {
@@ -161,14 +162,25 @@ model Connection {
 }
 
 model SkillExchange {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   offeredSkill String
   desiredSkill String
   description  String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
   userId       String
-  user         User     @relation(fields: [userId], references: [id])
-  likes        Int      @default(0)
-  comments     Int      @default(0)
+  user         User      @relation(fields: [userId], references: [id])
+  likes        Int       @default(0)
+  comments     Comment[]
+  commentCount Int       @default(0)
+}
+
+model Comment {
+  id              String        @id @default(cuid())
+  content         String
+  createdAt       DateTime      @default(now())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id])
+  skillExchangeId String
+  skillExchange   SkillExchange @relation(fields: [skillExchangeId], references: [id])
 }

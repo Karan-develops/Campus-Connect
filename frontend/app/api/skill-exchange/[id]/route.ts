@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
+import { getDbIdByClerkID } from "@/actions/extraUser.actions";
 
 export async function GET(
   req: Request,
@@ -12,8 +13,23 @@ export async function GET(
       include: {
         user: {
           select: {
+            id: true,
             name: true,
             avatarUrl: true,
+          },
+        },
+        comments: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                avatarUrl: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: "desc",
           },
         },
       },
@@ -42,11 +58,17 @@ export async function PUT(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const dbId = await getDbIdByClerkID(userId);
+
+  if (!dbId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const { offeredSkill, desiredSkill, description } = await req.json();
 
     const listing = await prisma.skillExchange.update({
-      where: { id: params.id },
+      where: { id: params.id, userId: dbId },
       data: {
         offeredSkill,
         desiredSkill,
@@ -73,7 +95,26 @@ export async function DELETE(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const dbId = await getDbIdByClerkID(userId);
+
+  if (!dbId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
+    const listing = await prisma.skillExchange.findUnique({
+      where: { id: params.id },
+      select: { userId: true },
+    });
+
+    if (!listing) {
+      return NextResponse.json({ error: "Listing not found" }, { status: 404 });
+    }
+
+    if (listing.userId !== dbId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
+
     await prisma.skillExchange.delete({
       where: { id: params.id },
     });
