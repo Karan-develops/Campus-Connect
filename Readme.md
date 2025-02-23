@@ -58,7 +58,7 @@ With a structured backend architecture and efficient state management using Zust
 ```
 ## 📁 File Structure :
 Directory structure:
-└── karan-develops-campus-compass/
+└── karan-develops-campus-connect/
     ├── Readme.md
     ├── CONTRIBUTING.md
     ├── LICENCE
@@ -164,7 +164,10 @@ Directory structure:
         │   │   ├── peers/
         │   │   │   ├── login-page.tsx
         │   │   │   ├── page.tsx
-        │   │   │   └── peers-content.tsx
+        │   │   │   ├── peers-content.tsx
+        │   │   │   └── skill-exchange/
+        │   │   │       ├── page.tsx
+        │   │   │       └── skill-exchange-content.tsx
         │   │   ├── placements/
         │   │   │   ├── page.tsx
         │   │   │   └── placements-content.tsx
@@ -186,6 +189,14 @@ Directory structure:
         │   │   │   └── route.ts
         │   │   ├── profile/
         │   │   │   └── route.ts
+        │   │   ├── skill-exchange/
+        │   │   │   ├── route.ts
+        │   │   │   └── [id]/
+        │   │   │       ├── route.ts
+        │   │   │       ├── comment/
+        │   │   │       │   └── route.ts
+        │   │   │       └── like/
+        │   │   │           └── route.ts
         │   │   └── sports-info/
         │   │       └── route.ts
         │   └── constants/
@@ -194,7 +205,8 @@ Directory structure:
         │       ├── club-data.constants.ts
         │       ├── contact.constants.ts
         │       ├── events-data.constants.ts
-        │       └── peersData.constants.ts
+        │       ├── peersData.constants.ts
+        │       └── skill.constants.ts
         ├── components/
         │   ├── AuthProvider.tsx
         │   ├── CampusMap.tsx
@@ -250,7 +262,11 @@ Directory structure:
         │       │   └── migration.sql
         │       ├── 20250209091130_campus_life/
         │       │   └── migration.sql
-        │       └── 20250211113840_connections/
+        │       ├── 20250211113840_connections/
+        │       │   └── migration.sql
+        │       ├── 20250222120441_skills/
+        │       │   └── migration.sql
+        │       └── 20250223102327_skill_ex_likes_comments/
         │           └── migration.sql
         └── public/
             └── images/
@@ -334,4 +350,4 @@ Contributions are welcome! Please follow these steps to contribute:
 
 This repository is open source and under [MIT](https://choosealicense.com/licenses/mit/) License.
 
---- ***Lets Build & Grow Together*** **😊** ---
+--- **_Lets Build & Grow Together_** **😊** ---
