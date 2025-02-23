@@ -27,8 +27,9 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, MessageCircle, ThumbsUp, Share2 } from "lucide-react";
+import { Search, MessageCircle, ThumbsUp, Share2, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuthStore } from "@/lib/store/authStore";
 
 interface SkillExchangeListing {
   id: string;
@@ -36,12 +37,24 @@ interface SkillExchangeListing {
   desiredSkill: string;
   description: string;
   user: {
+    id: string;
     name: string | null;
     avatarUrl: string | null;
   };
   likes: number;
-  comments: number;
+  commentCount: number;
   createdAt: string;
+}
+
+interface Comment {
+  id: string;
+  content: string;
+  createdAt: string;
+  user: {
+    id: string;
+    name: string | null;
+    avatarUrl: string | null;
+  };
 }
 
 export default function SkillExchangeContent() {
@@ -49,6 +62,10 @@ export default function SkillExchangeContent() {
   const [listings, setListings] = useState<SkillExchangeListing[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedListing, setSelectedListing] =
+    useState<SkillExchangeListing | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [newComment, setNewComment] = useState("");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -113,6 +130,123 @@ export default function SkillExchangeContent() {
       toast({
         title: "Error",
         description: "Failed to create listing. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeleteListing = async (id: string) => {
+    try {
+      const response = await fetch(`/api/skill-exchange/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete listing");
+      }
+
+      setListings(listings.filter((listing) => listing.id !== id));
+      toast({
+        title: "Success",
+        description: "Your listing has been deleted successfully.",
+      });
+    } catch (error) {
+      console.error("Error deleting listing:", error);
+      toast({
+        title: "Error",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to delete listing. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleLike = async (id: string) => {
+    try {
+      const response = await fetch(`/api/skill-exchange/${id}/like`, {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to like listing");
+      }
+
+      const updatedListing = await response.json();
+      setListings(
+        listings.map((listing) =>
+          listing.id === id
+            ? { ...listing, likes: updatedListing.likes }
+            : listing
+        )
+      );
+    } catch (error) {
+      console.error("Error liking listing:", error);
+      toast({
+        title: "Error",
+        description: "Failed to like listing. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleComment = async (id: string) => {
+    try {
+      if (newComment.trim() == "") {
+        toast({
+          title: "Error",
+          description: "Comment Can't Be Empty!.",
+          variant: "destructive",
+        });
+        return;
+      }
+      const response = await fetch(`/api/skill-exchange/${id}/comment`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ content: newComment }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add comment");
+      }
+
+      const newCommentData = await response.json();
+      setComments([newCommentData, ...comments]);
+      setNewComment("");
+      setListings(
+        listings.map((listing) =>
+          listing.id === id
+            ? { ...listing, commentCount: listing.commentCount + 1 }
+            : listing
+        )
+      );
+    } catch (error) {
+      console.error("Error adding comment:", error);
+      toast({
+        title: "Error",
+        description: "Failed to add comment. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const fetchComments = async (id: string) => {
+    try {
+      const response = await fetch(`/api/skill-exchange/${id}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch comments");
+      }
+      const data = await response.json();
+      setComments(data.comments);
+      setSelectedListing(data);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch comments. Please try again.",
         variant: "destructive",
       });
     }
@@ -233,11 +367,10 @@ export default function SkillExchangeContent() {
                   <CardHeader>
                     <div className="flex items-center space-x-4">
                       <Avatar>
-                        {/* FIXME: */}
-                        {/* <AvatarImage
+                        <AvatarImage
                           src={listing.user.avatarUrl || undefined}
                           alt={listing.user.name || ""}
-                        /> */}
+                        />
                         <AvatarFallback>
                           {listing.user.name
                             ? listing.user.name.charAt(0)
@@ -268,17 +401,34 @@ export default function SkillExchangeContent() {
                     </p>
                   </CardContent>
                   <CardFooter className="flex justify-between">
-                    <Button variant="ghost" size="sm">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleLike(listing.id)}
+                    >
                       <ThumbsUp className="mr-2 h-4 w-4" />
                       {listing.likes}
                     </Button>
-                    <Button variant="ghost" size="sm">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => fetchComments(listing.id)}
+                    >
                       <MessageCircle className="mr-2 h-4 w-4" />
-                      {listing.comments}
+                      {listing.commentCount}
                     </Button>
                     <Button variant="ghost" size="sm">
                       <Share2 className="mr-2 h-4 w-4" />
                       Share
+                    </Button>
+                    {/* FIXME: */}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDeleteListing(listing.id)}
+                    >
+                      <Trash2 className="mr-2 h-4 w-4 text-red-500" />
+                      <span className="text-red-500">Delete</span>
                     </Button>
                   </CardFooter>
                 </Card>
@@ -331,6 +481,67 @@ export default function SkillExchangeContent() {
           </div>
         </TabsContent>
       </Tabs>
+
+      {selectedListing && (
+        <Dialog
+          open={!!selectedListing}
+          onOpenChange={() => setSelectedListing(null)}
+        >
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                {selectedListing.offeredSkill} / {selectedListing.desiredSkill}
+              </DialogTitle>
+              <DialogDescription>
+                Posted by {selectedListing.user.name} on{" "}
+                {new Date(selectedListing.createdAt).toLocaleDateString()}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="mt-4">
+              <h4 className="font-semibold">Description:</h4>
+              <p>{selectedListing.description}</p>
+            </div>
+            <div className="mt-4">
+              <h4 className="font-semibold">Comments:</h4>
+              <div className="space-y-4 mt-2 max-h-60 overflow-y-auto">
+                {comments.map((comment) => (
+                  <div key={comment.id} className="flex items-start space-x-2">
+                    <Avatar>
+                      <AvatarImage
+                        src={comment.user.avatarUrl || undefined}
+                        alt={comment.user.name || ""}
+                      />
+                      <AvatarFallback>
+                        {comment.user.name ? comment.user.name.charAt(0) : "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-semibold">{comment.user.name}</p>
+                      <p className="text-xs text-gray-400">
+                        {new Date(comment.createdAt).toLocaleString()}
+                      </p>
+                      <p className="text-sm text-gray-300">{comment.content}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="mt-4">
+              <Textarea
+                placeholder="Add a comment..."
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+              />
+              <Button
+                className="mt-2"
+                onClick={() => handleComment(selectedListing.id)}
+              >
+                Post Comment
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
