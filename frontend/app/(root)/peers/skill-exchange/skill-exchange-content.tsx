@@ -429,7 +429,19 @@ export default function SkillExchangeContent() {
                       <MessageCircle className="mr-2 h-4 w-4" />
                       {listing.commentCount}
                     </Button>
-                    <Button variant="ghost" size="sm">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        const shareText = `/peers/skill-exchange/listing/${listing.id}`;
+                        navigator.clipboard.writeText(shareText);
+                        toast({
+                          title: "Success",
+                          description:
+                            "Listing link copied! Share with Friends✅.",
+                        });
+                      }}
+                    >
                       <Share2 className="mr-2 h-4 w-4" />
                       Share
                     </Button>
