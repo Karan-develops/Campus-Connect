@@ -103,12 +103,12 @@ Directory structure:
         ├── postcss.config.mjs
         ├── tailwind.config.ts
         ├── tsconfig.json
-        ├── types.d.ts
         ├── .gitignore
         ├── actions/
         │   ├── extraUser.actions.ts
         │   ├── message.actions.ts
         │   ├── peers.actions.ts
+        │   ├── skills.actions.ts
         │   └── user.actions.ts
         ├── app/
         │   ├── error.tsx
@@ -167,7 +167,11 @@ Directory structure:
         │   │   │   ├── peers-content.tsx
         │   │   │   └── skill-exchange/
         │   │   │       ├── page.tsx
-        │   │   │       └── skill-exchange-content.tsx
+        │   │   │       ├── skill-exchange-content.tsx
+        │   │   │       └── listing/
+        │   │   │           └── [id]/
+        │   │   │               ├── ListingContent.tsx
+        │   │   │               └── page.tsx
         │   │   ├── placements/
         │   │   │   ├── page.tsx
         │   │   │   └── placements-content.tsx
@@ -266,11 +270,15 @@ Directory structure:
         │       │   └── migration.sql
         │       ├── 20250222120441_skills/
         │       │   └── migration.sql
-        │       └── 20250223102327_skill_ex_likes_comments/
+        │       ├── 20250223102327_skill_ex_likes_comments/
+        │       │   └── migration.sql
+        │       └── 20250223115641_likes_bug_fix/
         │           └── migration.sql
-        └── public/
-            └── images/
-                └── placements/
+        ├── public/
+        │   └── images/
+        │       └── placements/
+        └── types/
+            └── skill-exchange.ts
 ```
 
 ### Backend
