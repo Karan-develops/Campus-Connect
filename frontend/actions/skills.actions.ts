@@ -145,7 +145,7 @@ export async function deleteListing(id: string) {
 
   try {
     await prisma.skillExchange.delete({
-      where: { id: dbId },
+      where: { id },
     });
 
     revalidatePath("/peers/skill-exchange");

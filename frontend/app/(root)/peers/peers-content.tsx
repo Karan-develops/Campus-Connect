@@ -14,7 +14,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Search, MessageCircle, UserPlus, Bookmark } from "lucide-react";
+import {
+  Search,
+  MessageCircle,
+  UserPlus,
+  Bookmark,
+  ArrowUpRight,
+} from "lucide-react";
 import { User } from "@prisma/client";
 import { projects, students } from "@/app/constants/peersData.constants";
 import Link from "next/link";
@@ -91,8 +97,11 @@ export default function PeersContent({ initialUsers }: PeersContentProps) {
             className="max-w-sm"
           />
           <hr className="w-full" />
-          <Button>
-            <Link href={"/peers/skill-exchange"}>Skill-Exchange</Link>
+          <Button className="!bg-background !text-green-500 border border-white hover:!bg-white hover:!text-black">
+            <Link href={"/peers/skill-exchange"} className="flex gap-1">
+              Skill-Exchange
+              <ArrowUpRight />
+            </Link>
           </Button>
         </div>
         <Tabs defaultValue="peers" className="w-full">
@@ -102,56 +111,58 @@ export default function PeersContent({ initialUsers }: PeersContentProps) {
           </TabsList>
           <TabsContent value="peers">
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {users.map((user) => (
-            <Card key={user.id}>
-              <CardHeader>
-                <div className="flex items-center space-x-4">
-                  <Avatar>
-                    <AvatarImage
-                      src={user.avatarUrl || undefined}
-                      alt={user.name}
-                    />
-                    <AvatarFallback>
-                      {user.name.slice(0, 2).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <CardTitle>{user.name}</CardTitle>
-                    <CardDescription>
-                      {user.major}, {user.year}
-                    </CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">{user.bio}</p>
-                <div className="flex flex-wrap gap-2">
-                  {user.major?.split(",").map((skill: any, index: any) => (
-                    <Badge key={index} variant="secondary">
-                      {skill.trim()}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <Button variant="outline" size="sm" asChild>
-                  <Link href={`/messages/${user.id}`}>
-                    <MessageCircle className="mr-2 h-4 w-4" />
-                    Message
-                  </Link>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleConnect(user.id)}
-                  disabled={user.isConnected}
-                >
-                  <UserPlus className="mr-2 h-4 w-4" />
-                  {user.isConnected ? "Connected" : "Connect"}
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
+              {users.map((user) => (
+                <Card key={user.id}>
+                  <CardHeader>
+                    <div className="flex items-center space-x-4">
+                      <Avatar>
+                        <AvatarImage
+                          src={user.avatarUrl || undefined}
+                          alt={user.name}
+                        />
+                        <AvatarFallback>
+                          {user.name.slice(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <CardTitle>{user.name}</CardTitle>
+                        <CardDescription>
+                          {user.major}, {user.year}
+                        </CardDescription>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      {user.bio}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {user.major?.split(",").map((skill: any, index: any) => (
+                        <Badge key={index} variant="secondary">
+                          {skill.trim()}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                  <CardFooter className="flex justify-between">
+                    <Button variant="outline" size="sm" asChild>
+                      <Link href={`/messages/${user.id}`}>
+                        <MessageCircle className="mr-2 h-4 w-4" />
+                        Message
+                      </Link>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleConnect(user.id)}
+                      disabled={user.isConnected}
+                    >
+                      <UserPlus className="mr-2 h-4 w-4" />
+                      {user.isConnected ? "Connected" : "Connect"}
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
             </div>
           </TabsContent>
           <TabsContent value="projects">

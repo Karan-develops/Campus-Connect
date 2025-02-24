@@ -27,8 +27,17 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, MessageCircle, ThumbsUp, Share2, Trash2 } from "lucide-react";
+import {
+  Search,
+  MessageCircle,
+  ThumbsUp,
+  Share2,
+  Trash2,
+  Eye,
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
+import Loader1 from "@/components/Loader1";
 
 interface SkillExchangeListing {
   id: string;
@@ -370,7 +379,7 @@ export default function SkillExchangeContent() {
         <TabsContent value="all">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {isLoading ? (
-              <p>Loading listings...</p>
+              <Loader1 />
             ) : listings.length === 0 ? (
               <p>No listings found.</p>
             ) : (
@@ -453,6 +462,15 @@ export default function SkillExchangeContent() {
                     >
                       <Trash2 className="mr-2 h-4 w-4 text-red-500" />
                       <span className="text-red-500">Delete</span>
+                    </Button>
+                    <Button>
+                      <Link
+                        href={`/peers/skill-exchange/listing/${listing.id}`}
+                        className="flex gap-1"
+                      >
+                        <Eye className="mt-[3px]" />
+                        View
+                      </Link>
                     </Button>
                   </CardFooter>
                 </Card>
