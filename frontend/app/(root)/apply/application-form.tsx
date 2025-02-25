@@ -33,11 +33,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 import { formSchema } from "@/lib/validations";
 
 export default function ApplicationForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -54,22 +56,29 @@ export default function ApplicationForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsSubmitting(true);
     try {
-      setIsSubmitting(true);
-      // baadme backend se connect krke data lana hai
-      console.log(values);
+      const response = await fetch("/api/apply", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
 
-      // For now Fake simulation
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      if (!response.ok) {
+        throw new Error("Failed to submit application");
+      }
 
-      setIsSubmitting(false);
+      const data = await response.json();
       toast({
         variant: "default",
-        title: "Application Submitted",
+        title: "Application Submitted ✅",
         description:
           "Your application has been successfully submitted. We will contact you soon.",
       });
       form.reset();
+      router.push("/apply-success");
     } catch (error) {
       console.log("Error submitting the form");
       toast({
