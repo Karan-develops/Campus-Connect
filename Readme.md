@@ -12,11 +12,11 @@
 
 ## Introduction
 
-Campus Diary is a dynamic platform designed to streamline and enhance campus life for students. Built with Next.js, TypeScript, Prisma, and Neon Postgres, it provides a seamless experience for connecting with peers, exploring campus resources, and staying updated with important events.
+Campus Connect is a dynamic platform designed to streamline and enhance campus life for students. Built with Next.js, TypeScript, Prisma, and Neon Postgres, it provides a seamless experience for connecting with peers, exploring campus resources, and staying updated with important events.
 
 The platform features a 'Peers' page, where students can easily discover and connect with fellow users. To ensure efficiency, the system optimally checks existing connections, displaying relevant statuses like 'Connect' or 'Already Connected' in real time.
 
-With a structured backend architecture and efficient state management using Zustand, Campus Diary aims to offer a smooth, scalable, and user-friendly experience for students navigating their campus ecosystem.
+With a structured backend architecture and efficient state management using Zustand, Campus Connect aims to offer a smooth, scalable, and user-friendly experience for students navigating their campus ecosystem.
 
 ## Features
 
@@ -70,6 +70,7 @@ Directory structure:
     │   ├── .gitignore
     │   ├── controllers/
     │   │   ├── academicInfo.controller.ts
+    │   │   ├── applyForm.controller.ts
     │   │   ├── contactInfo.controller.ts
     │   │   ├── demoSportsData.controller.ts
     │   │   └── placement.controller.ts
@@ -77,11 +78,13 @@ Directory structure:
     │   │   └── connectDb.ts
     │   ├── models/
     │   │   ├── academicData.models.ts
+    │   │   ├── applyForm.models.ts
     │   │   ├── contactInfo.models.ts
     │   │   ├── demoPlacements.models.ts
     │   │   └── demoSportsProgramData.models.ts
     │   ├── routes/
     │   │   ├── academicInfo.route.ts
+    │   │   ├── applyForm.route.ts
     │   │   ├── contactInfo.route.ts
     │   │   ├── demoSportsData.route.ts
     │   │   └── placement.route.ts
@@ -138,10 +141,15 @@ Directory structure:
         │   │   ├── apply/
         │   │   │   ├── application-form.tsx
         │   │   │   └── page.tsx
+        │   │   ├── apply-success/
+        │   │   │   └── page.tsx
         │   │   ├── campus-life/
         │   │   │   ├── clubs/
         │   │   │   │   ├── club-content.tsx
-        │   │   │   │   └── page.tsx
+        │   │   │   │   ├── page.tsx
+        │   │   │   │   └── [id]/
+        │   │   │   │       ├── club-details.tsx
+        │   │   │   │       └── page.tsx
         │   │   │   ├── create/
         │   │   │   │   ├── create-content.tsx
         │   │   │   │   └── page.tsx
@@ -183,6 +191,16 @@ Directory structure:
         │   │   ├── academic-info/
         │   │   │   └── [name]/
         │   │   │       └── route.ts
+        │   │   ├── apply/
+        │   │   │   └── route.ts
+        │   │   ├── clubs/
+        │   │   │   ├── route.ts
+        │   │   │   └── [id]/
+        │   │   │       ├── route.ts
+        │   │   │       ├── join/
+        │   │   │       │   └── route.ts
+        │   │   │       └── leave/
+        │   │   │           └── route.ts
         │   │   ├── contact-info/
         │   │   │   └── route.ts
         │   │   ├── create/
@@ -272,7 +290,11 @@ Directory structure:
         │       │   └── migration.sql
         │       ├── 20250223102327_skill_ex_likes_comments/
         │       │   └── migration.sql
-        │       └── 20250223115641_likes_bug_fix/
+        │       ├── 20250223115641_likes_bug_fix/
+        │       │   └── migration.sql
+        │       ├── 20250225141612_clubs/
+        │       │   └── migration.sql
+        │       └── 20250225162823_clubs_fix/
         │           └── migration.sql
         ├── public/
         │   └── images/
