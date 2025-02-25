@@ -32,7 +32,7 @@ model User {
   portfolioItems   PortfolioItem[]
   privacySettings  PrivacySettings?
   events           Event[]
-  clubs            Club[]
+  clubs            Club[]            @relation("ClubMembers")
   sports           Sport[]
   connections      Connection[]      @relation("UserConnections")
   connectedBy      Connection[]      @relation("ConnectedUsers")
@@ -42,6 +42,7 @@ model User {
   updatedAt        DateTime          @updatedAt
   password         String            @default("defaultpassword")
   comments         Comment[]
+  Club             Club[]
 }
 
 model Project {
@@ -132,8 +133,10 @@ model Club {
   category     String
   description  String
   contactEmail String
+  image        String?
   creatorId    String
   creator      User     @relation(fields: [creatorId], references: [id])
+  members      User[]   @relation("ClubMembers")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
