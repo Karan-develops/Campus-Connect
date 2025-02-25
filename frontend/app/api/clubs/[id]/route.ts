@@ -49,7 +49,7 @@ export async function PUT(
   }
 
   try {
-    const { name, category, description, image } = await req.json();
+    const { name, category, description } = await req.json();
 
     const club = await prisma.club.update({
       where: { id: params.id },
@@ -57,7 +57,6 @@ export async function PUT(
         name,
         category,
         description,
-        image,
       },
     });
 

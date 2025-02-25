@@ -15,7 +15,7 @@ import DynamicForm, { FormField } from "@/components/CreateForm";
 
 const eventFields: FormField[] = [
   { name: "name", label: "Event Name", type: "text" },
-  { name: "date", label: "Event Date", type: "text" },
+  { name: "date", label: "Event Date - [ 01 - 10 - 20XX ]", type: "text" },
   { name: "location", label: "Location", type: "text" },
   { name: "description", label: "Description", type: "textarea" },
 ];

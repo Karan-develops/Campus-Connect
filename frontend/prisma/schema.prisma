@@ -133,7 +133,6 @@ model Club {
   category     String
   description  String
   contactEmail String
-  image        String?
   creatorId    String
   creator      User     @relation(fields: [creatorId], references: [id])
   members      User[]   @relation("ClubMembers")

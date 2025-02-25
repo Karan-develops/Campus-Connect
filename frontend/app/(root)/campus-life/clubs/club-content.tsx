@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -11,23 +11,92 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Eye, Search } from "lucide-react";
 import Link from "next/link";
-import { clubCategories } from "@/app/constants/club-data.constants";
+import { useToast } from "@/hooks/use-toast";
+import Loader1 from "@/components/Loader1";
+
+interface Club {
+  id: string;
+  name: string;
+  category: string;
+  creator: string;
+  description: string;
+  image: string;
+  _count: {
+    members: number;
+  };
+}
 
 export default function StudentsClubContent() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [clubs, setClubs] = useState<Club[]>([]);
+  const [filteredClubs, setFilteredClubs] = useState<Club[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
-  const filteredClubs = clubCategories
-    .map((category) => ({
-      ...category,
-      clubs: category.clubs.filter(
-        (club) =>
-          club.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          club.description.toLowerCase().includes(searchTerm.toLowerCase())
-      ),
-    }))
-    .filter((category) => category.clubs.length > 0);
+  useEffect(() => {
+    fetchClubs();
+  }, []);
+
+  useEffect(() => {
+    const filtered = clubs.filter(
+      (club) =>
+        club.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        club.description.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredClubs(filtered);
+  }, [searchTerm, clubs]);
+
+  const fetchClubs = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("/api/clubs");
+      if (!response.ok) {
+        throw new Error("Failed to fetch clubs");
+      }
+      const data: Club[] = await response.json();
+      setClubs(data);
+      const uniqueCategories = Array.from(
+        new Set(data.map((club: Club) => club.category))
+      );
+      setCategories(uniqueCategories);
+    } catch (error) {
+      console.error("Error fetching clubs:", error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch clubs. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleJoinClub = async (clubId: string, clubName: string) => {
+    try {
+      const response = await fetch(`/api/clubs/${clubId}/join`, {
+        method: "POST",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to join club");
+      }
+      const updatedClub = await response.json();
+      setClubs(clubs.map((club) => (club.id === clubId ? updatedClub : club)));
+      toast({
+        title: "Club Joined",
+        description: `You have successfully joined ${clubName}!`,
+      });
+    } catch (error) {
+      console.error("Error joining club:", error);
+      toast({
+        title: "Error",
+        description: "Failed to join club. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className="space-y-12">
@@ -38,42 +107,57 @@ export default function StudentsClubContent() {
             type="text"
             placeholder="Search clubs..."
             value={searchTerm}
-            onChange={(e: any) => setSearchTerm(e.target.value)}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="max-w-sm"
           />
         </div>
-        <Tabs defaultValue={clubCategories[0].name} className="w-full">
-          <TabsList className="mb-4">
-            {clubCategories.map((category) => (
-              <TabsTrigger key={category.name} value={category.name}>
-                {category.name}
-              </TabsTrigger>
+        {loading ? (
+          <Loader1 />
+        ) : (
+          <Tabs defaultValue={categories[0]} className="w-full">
+            <TabsList className="mb-4">
+              {categories.map((category) => (
+                <TabsTrigger key={category} value={category}>
+                  {category}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            {categories.map((category) => (
+              <TabsContent key={category} value={category}>
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  {filteredClubs
+                    .filter((club) => club.category === category)
+                    .map((club) => (
+                      <Card key={club.id}>
+                        <CardHeader>
+                          <CardTitle>{club.name} -- Club Leader - {club.creator} </CardTitle>
+                          <CardDescription>
+                            {club._count.members} members
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="mb-4">{club.description}</p>
+                          <div className="flex justify-between items-center">
+                            <Button
+                              onClick={() => handleJoinClub(club.id, club.name)}
+                            >
+                              Join Club
+                            </Button>
+                            <Link href={`/campus-life/clubs/${club.id}`}>
+                              <Button variant="outline">
+                                View Club
+                                <Eye />
+                              </Button>
+                            </Link>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                </div>
+              </TabsContent>
             ))}
-          </TabsList>
-          {filteredClubs.map((category) => (
-            <TabsContent key={category.name} value={category.name}>
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {category.clubs.map((club) => (
-                  <Card key={club.name}>
-                    <CardHeader>
-                      <CardTitle>{club.name}</CardTitle>
-                      <CardDescription>{club.members} members</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <img
-                        src={club.image || ""}
-                        alt={club.name}
-                        className="w-full h-40 object-cover rounded-md mb-4"
-                      />
-                      <p className="mb-4">{club.description}</p>
-                      <Button>Join Club</Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </TabsContent>
-          ))}
-        </Tabs>
+          </Tabs>
+        )}
       </section>
 
       <section className="bg-gray-800 p-8 rounded-lg">

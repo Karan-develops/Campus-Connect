@@ -40,7 +40,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { name, category, description, creator, contactEmail, image } =
+    const { name, category, description, creator, contactEmail } =
       await req.json();
 
     const club = await prisma.club.create({
@@ -48,7 +48,6 @@ export async function POST(req: Request) {
         name,
         category,
         description,
-        image,
         creator,
         contactEmail,
         members: {
