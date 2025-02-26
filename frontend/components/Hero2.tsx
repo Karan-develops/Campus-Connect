@@ -18,7 +18,7 @@ const Hero2 = () => {
 
             <h1 className="text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl bg-clip-text text-transparent bg-gradient-to-r from-slate-900/80 to-slate-700 dark:from-slate-100 dark:to-slate-300 mb-6">
               Community Campus
-              <br /> Diary
+              <br /> Connect
             </h1>
 
             <p className="max-w-2xl text-lg text-muted-foreground mb-12">

@@ -22,7 +22,7 @@ export default function Footer() {
           <div>
             <h2 className="text-white text-lg font-semibold mb-4">About Us</h2>
             <p className="text-sm leading-relaxed">
-              Campus Diary is a premier institution dedicated to fostering
+              Campus Connect is a premier institution dedicated to fostering
               academic excellence, innovation, and personal growth. Our mission
               is to empower students with knowledge, skills, and values to
               become future leaders and change-makers.
@@ -98,7 +98,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center">
                 <Mail className="w-5 h-5 mr-2" />
-                <span>info@campusdiary.edu</span>
+                <span>info@campusConnect.edu</span>
               </li>
               <li className="flex items-center">
                 <ChevronRightCircle className="w-5 h-5 mr-2" />
@@ -133,7 +133,7 @@ export default function Footer() {
         <Separator className="my-8 bg-gray-700" />
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="text-sm mb-4 md:mb-0">
-            © {new Date().getFullYear()} Campus Diary. All rights reserved.
+            © {new Date().getFullYear()} Campus Connect. All rights reserved.
           </div>
           <div className="flex space-x-4">
             <a href="#" className="hover:text-white transition-colors">

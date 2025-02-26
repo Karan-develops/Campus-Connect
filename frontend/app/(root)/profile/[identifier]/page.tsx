@@ -5,8 +5,8 @@ import ProfileContent from "../profile-content";
 import prisma from "@/lib/prisma";
 
 export const metadata: Metadata = {
-  title: "Student Profile | Campus Diary",
-  description: "View and manage your student profile at Campus Diary.",
+  title: "Student Profile | Campus Connect",
+  description: "View and manage your student profile at Campus Connect.",
 };
 
 export default async function ProfilePage({

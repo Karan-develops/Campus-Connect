@@ -55,7 +55,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, isLoading }) => {
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0">
               <span className="flex gap-1 text-xl font-bold">
-                Campus Diary
+                Campus Connect
                 <GraduationCap />
               </span>
             </Link>

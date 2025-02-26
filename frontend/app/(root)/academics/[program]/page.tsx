@@ -3,9 +3,9 @@ import { notFound } from "next/navigation";
 import LearnMoreContent from "./learn-more-content";
 
 export const metadata: Metadata = {
-  title: "Learn More | Academics | Campus Diary",
+  title: "Learn More | Academics | Campus Connect",
   description:
-    "Explore detailed information about our academic programs at Campus Diary.",
+    "Explore detailed information about our academic programs at Campus Connect.",
 };
 
 export default async function LearnMorePage({

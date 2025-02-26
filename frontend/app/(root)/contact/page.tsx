@@ -3,9 +3,9 @@ import ContactContent from "./contact-content";
 import { auth } from "@clerk/nextjs/server";
 
 export const metadata: Metadata = {
-  title: "Contact Us | Campus Diary",
+  title: "Contact Us | Campus Connect",
   description:
-    "Get in touch with Campus Diary. We're here to answer your questions and provide support.",
+    "Get in touch with Campus Connect. We're here to answer your questions and provide support.",
 };
 
 export default async function ContactPage() {

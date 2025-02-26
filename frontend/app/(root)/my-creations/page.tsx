@@ -4,9 +4,9 @@ import { redirect } from "next/navigation";
 import MyCreationsContent from "./my-creations-content";
 
 export const metadata: Metadata = {
-  title: "My Creations | Campus Diary",
+  title: "My Creations | Campus Connect",
   description:
-    "View and manage your created events, clubs, and sports at Campus Diary.",
+    "View and manage your created events, clubs, and sports at Campus Connect.",
 };
 
 export default async function MyCreationsPage() {

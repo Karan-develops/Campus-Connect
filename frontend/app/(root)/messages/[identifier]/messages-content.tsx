@@ -13,7 +13,8 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { User } from "@prisma/client";
 import { getMessages, sendMessage } from "@/actions/message.actions";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, CircleArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface MessageContentProps {
   otherUser: User;
@@ -23,6 +24,7 @@ export default function MessageContent({ otherUser }: MessageContentProps) {
   const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -62,6 +64,10 @@ export default function MessageContent({ otherUser }: MessageContentProps) {
             </AvatarFallback>
           </Avatar>
           <span>{otherUser.name}</span>
+          <hr className="w-80" />
+          <Button onClick={() => router.back()}>
+            Go Back <CircleArrowLeft />
+          </Button>
         </CardTitle>
       </CardHeader>
       <CardContent className="h-[400px] overflow-y-auto no-scrollbar">

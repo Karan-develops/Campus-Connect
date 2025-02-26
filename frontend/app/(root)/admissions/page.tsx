@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import AdmissionsContent from "./admissions-content";
 
 export const metadata: Metadata = {
-  title: "Admissions | Campus Diary",
+  title: "Admissions | Campus Connect",
   description:
     "Learn about our admission process, requirements, and important dates for joining our college community.",
 };

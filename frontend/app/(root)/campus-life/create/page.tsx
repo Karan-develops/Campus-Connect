@@ -3,8 +3,8 @@ import CreateContent from "./create-content";
 import { Sparkles } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Create | Campus Diary",
-  description: "Create new events, clubs, or sports at Campus Diary.",
+  title: "Create | Campus Connect",
+  description: "Create new events, clubs, or sports at Campus Connect.",
 };
 
 export default function CreatePage() {

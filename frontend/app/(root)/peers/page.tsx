@@ -7,9 +7,9 @@ import LoginPage from "./login-page";
 import { currentUser } from "@clerk/nextjs/server";
 
 export const metadata: Metadata = {
-  title: "Peers | Campus Diary",
+  title: "Peers | Campus Connect",
   description:
-    "Connect with your peers, find collaborators, and explore exciting projects at Campus Diary.",
+    "Connect with your peers, find collaborators, and explore exciting projects at Campus Connect.",
 };
 
 export default async function PeersPage() {

@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import ApplicationForm from "./application-form";
 
 export const metadata: Metadata = {
-  title: "Apply for Admission | Campus Diary",
+  title: "Apply for Admission | Campus Connect",
   description:
-    "Submit your application for admission to Campus Diary. Join our vibrant academic community and shape your future.",
+    "Submit your application for admission to Campus Connect. Join our vibrant academic community and shape your future.",
 };
 
 export default function ApplyPage() {

@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import "@/app/globals.css";
 
 export const metadata: Metadata = {
-  title: "Authentication | Campus Diary",
-  description: "Sign in or create an account for Campus Diary",
+  title: "Authentication | Campus Connect",
+  description: "Sign in or create an account for Campus Connect",
 };
 
 export default function AuthLayout({

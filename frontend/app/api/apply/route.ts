@@ -7,9 +7,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  console.log("***********************");
-  
-
   try {
     const {
       firstName,
@@ -24,9 +21,6 @@ export async function POST(req: Request) {
       gpa,
       essay,
     } = await req.json();
-
-    console.log("222222222222222222");
-    
 
     if (
       !firstName ||
@@ -47,30 +41,24 @@ export async function POST(req: Request) {
       );
     }
 
-    console.log("***********************");
-    
-
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/apply-form`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId,
-          firstName,
-          lastName,
-          email,
-          phone,
-          dateOfBirth,
-          gender,
-          address,
-          program,
-          previousSchool,
-          gpa,
-          essay,
-        }),
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/api/apply-form`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId,
+        firstName,
+        lastName,
+        email,
+        phone,
+        dateOfBirth,
+        gender,
+        address,
+        program,
+        previousSchool,
+        gpa,
+        essay,
+      }),
+    });
 
     if (!response.ok) {
       return NextResponse.json(

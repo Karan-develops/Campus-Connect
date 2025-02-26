@@ -92,7 +92,7 @@ export default function SignUpPage() {
       <CardHeader>
         <CardTitle>Sign Up</CardTitle>
         <CardDescription>
-          Create a new account to join Campus Diary
+          Create a new account to join Campus Connect
         </CardDescription>
       </CardHeader>
       <CardContent>

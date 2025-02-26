@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import AcademicsContent from "./academics-content";
 
 export const metadata: Metadata = {
-  title: "Academics | Campus Diary",
+  title: "Academics | Campus Connect",
   description: "Explore our diverse range of academic programs and streams.",
 };
 

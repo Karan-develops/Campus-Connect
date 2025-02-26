@@ -31,7 +31,7 @@ const HomeNewFeatures = () => {
           </h2>
           <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
             Experience a vibrant and supportive learning community at Campus
-            Diary, where you'll find personalized attention, ample opportunities
+            Connect, where you'll find personalized attention, ample opportunities
             for growth, and lifelong connections. We foster a culture of
             collaboration and innovation, inspiring you to make a difference.
           </p>

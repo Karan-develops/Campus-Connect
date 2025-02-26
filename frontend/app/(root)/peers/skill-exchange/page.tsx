@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import SkillExchangeContent from "./skill-exchange-content";
 
 export const metadata: Metadata = {
-  title: "Skill Exchange | Campus Diary",
+  title: "Skill Exchange | Campus Connect",
   description: "Exchange skills with your peers and learn something new",
 };
 

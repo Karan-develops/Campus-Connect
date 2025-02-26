@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import StudentsClubContent from "./club-content";
 
 export const metadata: Metadata = {
-  title: "Student Clubs | Campus Diary",
+  title: "Student Clubs | Campus Connect",
   description:
-    "Explore the diverse range of student clubs and organizations at Campus Diary.",
+    "Explore the diverse range of student clubs and organizations at Campus Connect.",
 };
 
 export default function StudentsClubPage() {

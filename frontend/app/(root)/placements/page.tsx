@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import PlacementsContent from "./placements-content";
 
 export const metadata: Metadata = {
-  title: "Placements | Campus Dairy",
+  title: "Placements | Campus Connect",
   description:
     "Explore our outstanding placement records and student success stories.",
 };

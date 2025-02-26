@@ -5,8 +5,8 @@ import { getOtherUser } from "@/actions/message.actions";
 import Loader1 from "@/components/Loader1";
 
 export const metadata: Metadata = {
-  title: "Messages | Campus Diary",
-  description: "Chat with your peers at Campus Diary.",
+  title: "Messages | Campus Connect",
+  description: "Chat with your peers at Campus Connect.",
 };
 
 export default async function MessagePage({
