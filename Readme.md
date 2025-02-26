@@ -23,16 +23,20 @@ With a structured backend architecture and efficient state management using Zust
 - User authentication and authorization
 - Profile management for Users
 - Connect with Peers & Grow your Network
+- Send Message & Chat with Peers
 - Event scheduling and notifications
 - Discussion forums and messaging
 - Course Details and Forms
 - Brilliant UI & UX
+- Send Real Application by Filling Form (Secured By ZOD)
 - Create & Organize Clubs, Sports, Events
+- See Your Creations
 - ShowCase your Projects
+- Skill Exchange Page (Offer & Teach Skills)
 
 ## 📚 Tech Stack
 
-- **Frontend:**
+- **Frontend (Next Full Stack):**
   - React.js
   - Next.js
   - Shadcn-ui
@@ -40,6 +44,7 @@ With a structured backend architecture and efficient state management using Zust
   - TypeScript
   - Zod - Form Validation
   - Framer-motion
+  - Clerk
 - **State Management:**
   - Zustand
 - **Backend:**
@@ -298,7 +303,7 @@ Directory structure:
         │           └── migration.sql
         ├── public/
         │   └── images/
-        │       └── placements/
+        │   └── og-image.png
         └── types/
             └── skill-exchange.ts
 ```
