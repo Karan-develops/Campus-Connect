@@ -15,6 +15,8 @@ export default clerkMiddleware(async (auth, req) => {
     "/forgot-password",
     "/sso-callback",
     "/messages",
+    "/legal/privacy-policy",
+    "/legal/terms-of-service",
   ];
 
   if (publicRoutes.includes(url.pathname)) {
@@ -27,6 +29,7 @@ export default clerkMiddleware(async (auth, req) => {
     "/campus-life",
     "/apply",
     "/messages/",
+    "/search",
   ];
   if (
     !userId &&
