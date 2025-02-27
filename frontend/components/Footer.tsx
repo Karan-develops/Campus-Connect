@@ -29,6 +29,27 @@ export default function Footer() {
               is to empower students with knowledge, skills, and values to
               become future leaders and change-makers.
             </p>
+            <h2 className="text-white text-lg font-semibold mt-3 mb-4">
+              Policy
+            </h2>
+            <ul className="space-y-2">
+              <li>
+                <Link
+                  href="/legal/terms-of-service"
+                  className="hover:text-white transition-colors"
+                >
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/legal/privacy-policy"
+                  className="hover:text-white transition-colors"
+                >
+                  Privacy Policy
+                </Link>
+              </li>
+            </ul>
           </div>
           <div>
             <h2 className="text-white text-lg font-semibold mb-4">
