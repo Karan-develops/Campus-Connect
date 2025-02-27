@@ -116,6 +116,7 @@ Directory structure:
         │   ├── extraUser.actions.ts
         │   ├── message.actions.ts
         │   ├── peers.actions.ts
+        │   ├── search.actions.ts
         │   ├── skills.actions.ts
         │   └── user.actions.ts
         ├── app/
@@ -167,6 +168,11 @@ Directory structure:
         │   │   ├── contact/
         │   │   │   ├── contact-content.tsx
         │   │   │   └── page.tsx
+        │   │   ├── legal/
+        │   │   │   ├── privacy-policy/
+        │   │   │   │   └── page.tsx
+        │   │   │   └── terms-of-service/
+        │   │   │       └── page.tsx
         │   │   ├── messages/
         │   │   │   └── [identifier]/
         │   │   │       ├── messages-content.tsx
@@ -188,10 +194,14 @@ Directory structure:
         │   │   ├── placements/
         │   │   │   ├── page.tsx
         │   │   │   └── placements-content.tsx
-        │   │   └── profile/
-        │   │       ├── profile-content.tsx
-        │   │       └── [identifier]/
-        │   │           └── page.tsx
+        │   │   ├── profile/
+        │   │   │   ├── profile-content.tsx
+        │   │   │   └── [identifier]/
+        │   │   │       └── page.tsx
+        │   │   └── search/
+        │   │       ├── page.tsx
+        │   │       ├── search-input.tsx
+        │   │       └── search-results.tsx
         │   ├── api/
         │   │   ├── academic-info/
         │   │   │   └── [name]/
@@ -335,7 +345,7 @@ Directory structure:
 To run this project locally, follow these steps:
 
 1.  Clone the repository:
-    `git clone https://github.com/Karan-develops/Campus-Compass`
+    `git clone https://github.com/Karan-develops/Campus-Connect`
 2.  Navigate to the project directory:
     `cd frontend`
 3.  Install the dependencies:
