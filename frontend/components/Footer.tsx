@@ -3,7 +3,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
-  Facebook,
   Twitter,
   Instagram,
   Linkedin,
@@ -12,6 +11,9 @@ import {
   Phone,
   MapPin,
   ChevronRightCircle,
+  ScanFace,
+  Github,
+  BadgeCheck,
 } from "lucide-react";
 
 export default function Footer() {
@@ -81,6 +83,14 @@ export default function Footer() {
                   Contact
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/search"
+                  className="hover:text-white transition-colors"
+                >
+                  Search
+                </Link>
+              </li>
             </ul>
           </div>
           <div>
@@ -103,7 +113,13 @@ export default function Footer() {
               <li className="flex items-center">
                 <ChevronRightCircle className="w-5 h-5 mr-2" />
                 <Link href={"/contact"}>
-                <span>Go to contacts Page</span>
+                  <span>Go to contacts Page</span>
+                </Link>
+              </li>
+              <li className="flex items-center">
+                <ScanFace className="w-5 h-5 mr-2" />
+                <Link href={"/search"}>
+                  <span>Search in Campus Connect</span>
                 </Link>
               </li>
             </ul>
@@ -135,22 +151,39 @@ export default function Footer() {
           <div className="text-sm mb-4 md:mb-0">
             © {new Date().getFullYear()} Campus Connect. All rights reserved.
           </div>
+          <hr />
+          <span className="flex gap-2 mr-28">
+            Author - Karan Aggarwal <BadgeCheck className=" text-green-500" />
+          </span>
+          <hr />
           <div className="flex space-x-4">
-            <a href="#" className="hover:text-white transition-colors">
-              <Facebook className="w-5 h-5" />
-            </a>
-            <a href="#" className="hover:text-white transition-colors">
+            <Link
+              href={"https://github.com/Karan-develops"}
+              className="hover:text-white transition-colors"
+            >
+              <Github className="w-5 h-5" />
+            </Link>
+            <Link
+              href={"https://x.com/mrkaran000"}
+              className="hover:text-white transition-colors"
+            >
               <Twitter className="w-5 h-5" />
-            </a>
-            <a href="#" className="hover:text-white transition-colors">
+            </Link>
+            <Link
+              href={"https://www.instagram.com/karan_aggarwal_00"}
+              className="hover:text-white transition-colors"
+            >
               <Instagram className="w-5 h-5" />
-            </a>
-            <a href="#" className="hover:text-white transition-colors">
+            </Link>
+            <Link
+              href={"https://www.linkedin.com/in/karan-aggarwal-50a12b2b9/"}
+              className="hover:text-white transition-colors"
+            >
               <Linkedin className="w-5 h-5" />
-            </a>
-            <a href="#" className="hover:text-white transition-colors">
+            </Link>
+            <Link href={""} className="hover:text-white transition-colors">
               <Youtube className="w-5 h-5" />
-            </a>
+            </Link>
           </div>
         </div>
       </div>

@@ -25,6 +25,7 @@ const navItems = [
   { name: "Admissions", href: "/admissions" },
   { name: "Peers", href: "/peers" },
   { name: "Contact Us", href: "/contact" },
+  { name: "Search", href: "/search" },
   {
     name: "Campus Life",
     href: "#",
