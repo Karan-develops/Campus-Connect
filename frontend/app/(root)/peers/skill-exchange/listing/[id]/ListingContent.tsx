@@ -136,7 +136,7 @@ export default function SkillExchangeListingContent({
               variant="ghost"
               size="sm"
               onClick={() => {
-                const shareText = `http:localhost:3000/peers/skill-exchange/listing/${listing.id}`;
+                const shareText = `https://campus-connect-karan/peers/skill-exchange/listing/${listing.id}`;
                 navigator.clipboard.writeText(shareText);
                 toast({
                   title: "Success",
