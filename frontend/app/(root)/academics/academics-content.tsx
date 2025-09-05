@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { streams } from "@/app/constants/academicStreams.constants";
+import Image from "next/image";
 
 export default function AcademicsContent() {
   return (
@@ -26,7 +27,7 @@ export default function AcademicsContent() {
             <CardDescription>{stream.description}</CardDescription>
           </CardHeader>
           <CardContent className="flex-grow">
-            <img
+            <Image
               src={stream.image || ""}
               alt={`${stream.name} illustration`}
               className="w-full h-40 object-cover rounded-md mb-4"

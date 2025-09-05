@@ -19,7 +19,6 @@ import {
   Share2,
   Trash2,
   CircleArrowLeft,
-  UserPen,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { SkillExchangeListing, Comment } from "@/types/skill-exchange";

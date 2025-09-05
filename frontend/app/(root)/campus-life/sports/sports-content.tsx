@@ -7,13 +7,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Loader1 from "@/components/Loader1";
+import Image from "next/image";
 
 const upcomingEvents = [
   { date: new Date(2023, 8, 15), event: "Basketball Season Opener" },
@@ -67,7 +67,7 @@ export default function SportsContent() {
                 <CardTitle>{sport.name}</CardTitle>
               </CardHeader>
               <CardContent>
-                <img
+                <Image
                   src={sport.image || ""}
                   alt={sport.name}
                   className="w-full h-40 object-cover rounded-md mb-4"
@@ -88,7 +88,7 @@ export default function SportsContent() {
                 <CardTitle>{facility.name}</CardTitle>
               </CardHeader>
               <CardContent>
-                <img
+                <Image
                   src={facility.image || ""}
                   alt={facility.name}
                   className="w-full h-48 object-cover rounded-md mb-4"

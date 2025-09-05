@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
 import Loader1 from "@/components/Loader1";
+import Image from "next/image";
 
 export default function PlacementsContent() {
   const [data, setData] = useState<any>(null);
@@ -80,7 +81,7 @@ export default function PlacementsContent() {
               key={recruiter.name}
               className="flex flex-col items-center justify-center p-4"
             >
-              <img
+              <Image
                 src={recruiter.logo || ""}
                 alt={`${recruiter.name} logo`}
                 className="w-16 h-16 object-contain mb-2"

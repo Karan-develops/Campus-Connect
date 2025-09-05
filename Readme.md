@@ -1,4 +1,4 @@
-# Campus Project - Add Everything you know - Open Source
+# Campus Connect
 
 ## Table of Contents
 
@@ -17,6 +17,8 @@ Campus Connect is a dynamic platform designed to streamline and enhance campus l
 The platform features a 'Peers' page, where students can easily discover and connect with fellow users. To ensure efficiency, the system optimally checks existing connections, displaying relevant statuses like 'Connect' or 'Already Connected' in real time.
 
 With a structured backend architecture and efficient state management using Zustand, Campus Connect aims to offer a smooth, scalable, and user-friendly experience for students navigating their campus ecosystem.
+
+![banner](https://raw.githubusercontent.com/Karan-develops/Campus-Connect/refs/heads/main/App.png)
 
 ## Features
 
