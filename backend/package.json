@@ -5,7 +5,7 @@
   "scripts": {
     "server": "npx nodemon index.js",
     "build": "tsc",
-    "start": "node backend/dist/index.js",
+    "start": "node dist/index.js",
     "dev": "npm run build && npm run start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
