@@ -136,7 +136,7 @@ export default function SkillExchangeListingContent({
               variant="ghost"
               size="sm"
               onClick={() => {
-                const shareText = `https://campus-connect-karan/peers/skill-exchange/listing/${listing.id}`;
+                const shareText = `https://campus-connect-karan.vercel.app/peers/skill-exchange/listing/${listing.id}`;
                 navigator.clipboard.writeText(shareText);
                 toast({
                   title: "Success",

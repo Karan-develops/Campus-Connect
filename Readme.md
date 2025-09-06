@@ -327,7 +327,7 @@ Directory structure:
 | `MONGODB_URI` | Database URI                           |
 | `PORT`        | Port number for backend (8080 OR 5000) |
 
-### Frontend
+### Next JS
 
 | Varibale                            | Description                                      |
 | :---------------------------------- | :----------------------------------------------- |

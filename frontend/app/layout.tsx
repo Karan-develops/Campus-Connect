@@ -43,14 +43,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "http://localhost:3000",
+    url: "https://campus-connect-karan.vercel.app",
     siteName: "Campus Connect",
     title: "Campus Connect | New Journey Starts Here",
     description:
       "Discover a world of opportunities at Campus Connect. Connect with peers, join clubs, and shape your college experience.",
     images: [
       {
-        url: "http://localhost:3000/og-image.png",
+        url: "https://campus-connect-karan.vercel.app/og-image.png",
         width: 1200,
         height: 630,
         alt: "Campus Connect",
